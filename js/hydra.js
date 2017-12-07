@@ -301,92 +301,111 @@
 
     // TODO: customize response rendering 
     renderResponse: function(data, indent, last) {
-      var result = '';
-      var i;
+      return this.originalRenderResponse(data, indent, last);
+    },
 
-      if (_.isArray(data)) {
-        result += '[<br>' + indent;
-        for (i = 0; i < data.length; i++) {
-          result += '  ';
-          result += this.renderResponse(data[i], indent + '  ', (i === data.length - 1));
-          result += indent;
-        }
-        result += ']';
-      } else if (_.isObject(data)) {
-        if ('__orig_value' in data) {
-          result += '<span';
-          result += ' title="' + _.escape(JSON.stringify(data.__value)) + '"';
 
-          if ('@id' in data.__value) {
-            result += '><a href="' + data.__value['@id'] + '">';
-          } else {
-             result += ' class="literal">';
-          }
-          result += _.escape(JSON.stringify(data.__orig_value));
-          if ('@id' in data.__value) {
-            result += '</a>';
-          }
+    originalRenderResponse: function (data, indent, last) {
+        var result = '';
+        var i;
 
-          result += '</span>';
-          result += (last) ? '' : ',';
-          result += '<br>';
+        if (_.isArray(data)) {
+            result += '[<br>' + indent;
+            for (i = 0; i < data.length; i++) {
+                result += '  ';
+                result += this.renderResponse(data[i], indent + '  ', (i === data.length - 1));
+                result += indent;
+            }
+            result += ']';
+        } else if (_.isObject(data)) {
+            if ('__orig_value' in data) {
+                result += '<span';
+                result += ' title="' + _.escape(JSON.stringify(data.__value)) + '"';
 
-          return result;
-        }
+                if ('@id' in data.__value) {
+                    result += '><a href="' + data.__value['@id'] + '">';
+                } else {
+                    result += ' class="literal">';
+                }
 
-        // not a literal, start a new object
-        result += '{<br>';
+                // Value building
+                // var tmp = _.escape(JSON.stringify(data.__orig_value));
+                var tmp = JSON.stringify(data.__orig_value);
+                if (tmp[0] == '"') {
+                  tmp = tmp.substr(1, tmp.length - 2);
+                }
+                result += tmp;
 
-        var keys = _.keys(data);
-        for (i = 0; i < keys.length; i++) {
-          var key = keys[i];
-          var value = data[key];
+                if ('@id' in data.__value) {
+                    result += '</a>';
+                }
 
-          result += indent + '  ';
-          if ('@context' === key) {
-            //result += '&quot;@context&quot;: ' + _.escape(JSON.stringify(value)) + '<br>';
-            result += '&quot;@context&quot;: <span class="context" data-content="<pre>';
-            result += _.escape(JSON.stringify(value.__activectx, null, 2)).replace(/\n/g, '<br>');
-            result += '</pre>">';
-            result += _.escape(JSON.stringify(value.__value, null, 2)).replace(/\n/g, '<br>  ' + indent);
-            result += '</span>';
-            result += (i === keys.length - 1) ? '' : ',';
-            result += '<br>';
-          } else if ('@value' === key) {
-              result += '<span class="prop">&quot;<span class="prop-key" title="@value">@value</span>&quot;: ';
-              result += this.renderResponse(value, indent + '  ',  (i === keys.length - 1));
-              result += '</span>';
-              continue;
-          } else {
-            if (value.__iri) {
-              var reverse = '';
-              if ('^' === value.__iri[0]) {
-                value.__iri = value.__iri.substr(1);
-                reverse = 'reverse of ';
-              }
-              result += '<span class="prop" data-iri="' + _.escape(value.__iri);
-              result += '">&quot;<span class="prop-key" title="' + _.escape(reverse + value.__iri) + '">' + _.escape(key);
-              result += '</span>&quot;: ';
-            } else {
-              result += '<span class="not-mapped-prop">&quot;<span class="prop-key" title="not mapped to an IRI">';
-              result += _.escape(key);
-              result += '</span>&quot;: ';
+                result += '</span>';
+                result += (last) ? '' : ',';
+                result += '<br>';
+
+                return result;
             }
 
-            result += this.renderResponse(value.__value, indent + '  ',  (i === keys.length - 1));
-            result += '</span>';
-          }
+            // not a literal, start a new object
+            result += '{<br>';
+
+            var keys = _.keys(data);
+            for (i = 0; i < keys.length; i++) {
+                var key = keys[i];
+                var value = data[key];
+
+                result += indent + '  ';
+                if ('@context' === key) {
+                    // result += '&quot;@context&quot;: <span class="context" data-content="<pre>';
+                    // result += _.escape(JSON.stringify(value.__activectx, null, 2)).replace(/\n/g, '<br>');
+                    // result += '</pre>">';
+                    // result += _.escape(JSON.stringify(value.__value, null, 2)).replace(/\n/g, '<br>  ' + indent);
+                    // result += '</span>';
+                    // result += (i === keys.length - 1) ? '' : ',';
+                    result += '<br>';
+                } else if ('@value' === key) {
+                    // result += '<span class="prop">&quot;<span class="prop-key" title="@value">@value</span>&quot;: ';
+                    // result += this.renderResponse(value, indent + '  ',  (i === keys.length - 1));
+                    // result += '</span>';
+                    // continue;
+                } else if ('@type' === key) {
+
+
+                  result += '<span class="type">' +
+                      this.renderResponse(value.__value, indent + '    ', (i === keys.length - 1)) +
+                      '</span><br>';
+                } else {
+                    if (value.__iri) {
+                        var reverse = '';
+                        if ('^' === value.__iri[0]) {
+                            value.__iri = value.__iri.substr(1);
+                            reverse = 'reverse of ';
+                        }
+                        result += '<span class="prop" data-iri="' + _.escape(value.__iri);
+                        result += '">&quot;<span class="prop-key" title="' + _.escape(reverse + value.__iri) + '">' + _.escape(key);
+                        result += '</span>&quot;: ';
+                    } else {
+                        result += '<span class="not-mapped-prop">&quot;<span class="prop-key" title="not mapped to an IRI">';
+                        result += _.escape(key);
+                        result += '</span>&quot;: ';
+                    }
+
+                    result += this.renderResponse(value.__value, indent + '  ',  (i === keys.length - 1));
+                    result += '</span>';
+                }
+            }
+            result += indent + '}';
+        } else {
+            result += _.escape(JSON.stringify(data));
         }
-        result += indent + '}';
-      } else {
-        result += _.escape(JSON.stringify(data));
-      }
 
-      result += (last) ? '' : ',';
-      result += '<br>';
+        result += (last) ? '' : ',';
+        result += '<br>';
 
-      return result;
+        return result;
     }
+
 
   });
 

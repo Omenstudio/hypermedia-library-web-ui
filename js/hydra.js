@@ -286,6 +286,24 @@
                     'title': 'Active context',
                     'html': true
                 });
+                // Visual corrections of the table
+                $('#response').find('table').each(function () {
+                    var table = $(this);
+                    table.find('td').each(function () {
+                        var curTd = $(this);
+                        if (curTd.attr('data-original-title') === '@type') {
+                            var typeHref = curTd.parent().find('a').html().split('/');
+                            if (typeHref.length > 0)
+                                typeHref = typeHref[typeHref.length-1];
+
+                            table.prepend('<tr><th colspan="2">' + typeHref + '</th></tr>');
+                            return false;
+                        }
+                    });
+                });
+
+
+                //
             } else {
                 if (this.model.get('headers')) {
                     this.$el.html(
@@ -336,12 +354,12 @@
                     var value = data[key];
 
                     if ('@context' === key) {
-                        result += '<tr><td colspan="2">@context<span class="context" data-content="<pre>';
+                        result += '<tr><td>@context</td><td class="context" data-content="<pre>';
                         result += _.escape(JSON.stringify(value.__activectx, null, 2)).replace(/\n/g, '<br>');
                         result += '</pre>">';
-                        result += _.escape(JSON.stringify(value.__value, null, 2)).replace(/\n/g, '<br>');
-                        result += '</span>';
-                        result += '</td></tr><br>';
+                        result += value.__value.replace(/\n/g, '<br>');
+                        result += '</td>';
+                        result += '</td></tr>';
                     } else if ('@value' === key) {
                         result += '<tr class="prop"><td class="prop-key" title="@value">@value</td>';
                         result += this.renderResponse(value, (i === keys.length - 1));
@@ -363,7 +381,14 @@
                             result += '</td>';
                         }
 
-                        result += this.renderResponse(value.__value, (i === keys.length - 1));
+
+                        var rendered = this.renderResponse(value.__value, (i === keys.length - 1));
+
+                        if (rendered.substr(0, 4) === '<tab') {
+                            rendered = '<td>' + rendered + '</td>';
+                        }
+
+                        result += rendered;
                         result += '</tr>';
                     }
                 }

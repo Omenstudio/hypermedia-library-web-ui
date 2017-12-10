@@ -87,6 +87,12 @@
         vertical-align: top;
     }
 
+    #response p {
+        font-size: 16px;
+        line-height: 1.6;
+        margin-bottom: 20px;
+    }
+
     /*table tr div.tooltip {*/
       /*position: absolute !important;*/
       /*display: none;*/
@@ -130,29 +136,44 @@
             </h4>
         </div>
 <div id="response">
-Hi,
+    <p>Welcome to Hydra Web UI!</p>
 
-This is the Hydra Console - a generic client for Hydra-powered Web APIs. The
-user interface consists of three parts: the address bar on the top, this
-response pane, and the documentation pane.
+    <p>
+        This is a generic client for Hydra-powered Web APIs. The
+        user interface consists of three parts: the address bar on the top, this
+        response pane, and the documentation pane.
+    </p>
 
-As the name suggests, the address bar allows you to enter an URL to access
-the Web API. The response will then be rendered in the response pane and
-in the pane to the right you'll find the corresponding documentation.
+    <p>
+        The address bar allows you to enter an URL to access
+        the Web API. The response will then be rendered in the response pane and
+        in the pane to the right you'll find the corresponding documentation.
+    </p>
 
-When you move your mouse over a property, the corresponding item in the
-documentation will be highlighted. Additionally, a tooltip with the full IRI
-of the property will be shown. If you move your mouse over a context
-definition, the active context at that level will be shown.
+    <p>When you move your mouse over a property, the corresponding item in the
+        documentation will be highlighted. Additionally, a tooltip with the full IRI
+        of the property will be shown. If you move your mouse over a context
+        definition, the active context at that level will be shown.
+    </p>
 
-All links are blue and underlined. To invoke an operation, simply click on
-it and follow the instructions. If you want to browse an API and GET the
-target of a link, simply press the SHIFT-key while clicking on a link.
+    <p>
+        All links are blue and underlined. To invoke an operation, simply click on
+        it and follow the instructions. If you want to browse an API and GET the
+        target of a link, simply press the SHIFT-key while clicking on a link.
+    </p>
 
-To get started, enter the URL of the API in the address bar above and click
-on &quot;Load&quot;. If you wish, you can use the demo API featuring a simple issue
-tracker at <a href="http://www.markus-lanthaler.com/hydra/event-api/" data-action="GET">http://www.markus-lanthaler.com/hydra/event-api/</a>.
+    <p>
+        To get started, enter the URL of the API in the address bar above and click
+        on &quot;Load&quot;. You can use these APIs:
+    <ul>
+        <li>Library (books) Web API: <a href="https://library-service-books.herokuapp.com/api/" data-action="GET">https://library-service-books.herokuapp.com/api/</a></li>
+        <li>Library (articles) Web API: <a href="https://library-service-articles.herokuapp.com/api/" data-action="GET">https://library-service-articles.herokuapp.com/api/</a></li>
+        <li>Demo Web API by Markus Lanthaler: <a href="http://www.markus-lanthaler.com/hydra/event-api/" data-action="GET">http://www.markus-lanthaler.com/hydra/event-api/</a></li>
+    </ul>
+    </p>
+
 </div>
+
 <!--          <div id="pagination" class="pull-right">
           <a class="btn btn-info btn-small" href="#"><i class="icon-chevron-left icon-white"></i></a>
           <a class="btn btn-info btn-small" href="#"><i class="icon-chevron-right icon-white"></i></a>

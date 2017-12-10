@@ -301,6 +301,14 @@
                         }
                     });
                 });
+                // Hide additional info if needed
+                if ($('input#hide-add-info:checkbox:checked').length > 0) {
+                    $('#response').find('td').each(function () {
+                        if ($(this).html()[0] == '@' && $(this).html() != '@id') {
+                            $(this).parent().css('display', 'none');
+                        }
+                    });
+                }
 
 
                 //

@@ -1,4 +1,4 @@
-(function () {
+(function() {
     "use strict";
 
     var Hydra = {
@@ -6,11 +6,12 @@
         Views: {}
     };
 
-    Hydra.Models.Response = Backbone.Model.extend({});
+    Hydra.Models.Response = Backbone.Model.extend({
+    });
 
 
     Hydra.Models.Documentation = Backbone.Model.extend({
-        getTypeDefinition: function (url, vocab) {
+        getTypeDefinition: function(url, vocab) {
             var type = this.getElementDefinition(url);
 
             if (!type) {
@@ -28,7 +29,7 @@
             }
 
             var self = this;
-            type.properties = _.map(type.supportedProperties, function (entry) {
+            type.properties = _.map(type.supportedProperties, function(entry) {
                 var def = self.getElementDefinition(entry.property);
 
                 def.required = ('required' in entry) ? entry.required : false;
@@ -57,13 +58,13 @@
             return type;
         },
 
-        getElementDefinition: function (url, vocab) {
+        getElementDefinition: function(url, vocab) {
             vocab = vocab || this.get('vocab');
 
             if (!url)
                 return;  // TODO Ensure this never happens
 
-            var element = _.find(vocab, function (entry) {
+            var element = _.find(vocab, function(entry) {
                 return entry['@id'] === url;
             });
 
@@ -106,7 +107,7 @@
                         element.supportedOperations = _.uniq(
                             element.supportedOperations.concat(rangeDef.supportedOperations),
                             false,
-                            function (val) {
+                            function(val) {
                                 return val['@id'];
                             }
                         );
@@ -117,12 +118,10 @@
             return element;
         },
 
-        getTypes: function (vocab) {
+        getTypes: function(vocab) {
             vocab = vocab || this.get('vocab');
 
-            var isClass = function (t) {
-                return (('rdfs:Class' === t) || ('hydra:Class' === t));
-            };
+            var isClass = function (t) { return (('rdfs:Class' === t) || ('hydra:Class' === t)); };
             var types = _.map(vocab, function (entry) {
                 var types = entry['@type'];
                 if (_.isArray(types)) {
@@ -131,12 +130,10 @@
                     return isClass(types) ? entry : null;
                 }
             });
-            types = _.filter(types, function (t) {
-                return t !== null;
-            });
+            types = _.filter(types, function (t) { return t !== null; });
 
 
-            _.each(types, function (type) {
+            _.each(types, function(type) {
                 if (type.hydra_title) {
                     type.label = type.hydra_title;
                 }
@@ -151,7 +148,7 @@
 
 
     Hydra.Models.OperationsModal = Backbone.Model.extend({
-        update: function (operations, target) {
+        update: function(operations, target) {
             var i;
 
             for (i = operations.length - 1; i >= 0; i--) {
@@ -173,23 +170,23 @@
 
             if (target) {
                 operations = _.union(operations, [
-                    {"method": "GET", "isDefault": true},
-                    {"method": "POST", "isDefault": true},
-                    {"method": "PUT", "isDefault": true},
-                    {"method": "DELETE", "isDefault": true},
-                    {"method": "PATCH", "isDefault": true}
+                    { "method": "GET", "isDefault": true },
+                    { "method": "POST", "isDefault": true },
+                    { "method": "PUT", "isDefault": true },
+                    { "method": "DELETE", "isDefault": true },
+                    { "method": "PATCH", "isDefault": true }
                 ]);
             }
 
             var methodSortOrder = {
-                'GET': 2,
-                'POST': 4,
-                'PUT': 6,
-                'DELETE': 8,
-                'PATCH': 10
+                'GET':     2,
+                'POST':    4,
+                'PUT':     6,
+                'DELETE':  8,
+                'PATCH':  10
             };
 
-            operations = _.sortBy(operations, function (operation) {
+            operations = _.sortBy(operations, function(operation) {
                 return methodSortOrder[operation.method] + ((operation.isDefault) ? -1 : 0);
             });
 
@@ -203,7 +200,7 @@
                 }
             }
 
-            this.set({'operations': operations, 'target': target, 'selected': null});
+            this.set({ 'operations': operations, 'target': target, 'selected': null });
         }
     });
 
@@ -216,11 +213,11 @@
         //   });
         // },
 
-        setUrl: function (url) {
+        setUrl: function(url) {
             this.url.val(url);
         },
 
-        getUrl: function () {
+        getUrl: function() {
             return this.url.val();
         },
 
@@ -234,11 +231,11 @@
             'click a': 'clickLink'
         },
 
-        initialize: function () {
+        initialize: function() {
             this.model.bind('change', this.render, this);
         },
 
-        clickLink: function (e) {
+        clickLink: function(e) {
             e.preventDefault();
             var $target = $(e.target);
             var uri = $target.attr('href') || $target.parent().attr('href');
@@ -254,7 +251,7 @@
 
             // TODO Add support for multiple types
             if (('@id' === element.parent().parent().attr('data-iri')) && (element.parent().parent().siblings('.prop[data-iri="@type"]').length > 0)) {
-                types = JSON.parse(element.parent().parent().siblings('.prop[data-iri="@type"]').children('span')[1].title)['@id'];
+                types = JSON.parse(element.parent().parent().siblings('.prop[data-iri="@type"]').children('td')[1].title)['@id'];
             }
 
             do {
@@ -278,12 +275,12 @@
             }
         },
 
-        render: function () {
+        render: function() {
             if (null !== this.model.get('data')) {
-                this.$el.html(this.renderResponse(this.model.get('data'), '', true));
-                $('.prop-key').tooltip({'placement': 'right'});
-                $('.literal').tooltip({'placement': 'right'});
-                $('.context').popover({
+                this.$el.html( this.renderResponse(this.model.get('data'), '', true));
+                $('.prop-key').tooltip({ 'placement': 'right' });
+                $('.literal').tooltip({ 'placement': 'right' });
+                $('.context').popover( {
                     'trigger': 'hover',
                     'placement': 'right',
                     'title': 'Active context',
@@ -302,130 +299,81 @@
             return this;
         },
 
-        // TODO: customize response rendering
-        renderResponse: function (responseData, indent, last) {
-            var data = this.parseResponseData(responseData, indent, last);
+        renderResponse: function(data, last) {
+            var result = '';
+            var i;
 
-            return this.convertResponseDataToHtml(data);
-        },
-
-        convertResponseDataToHtml: function (obj) {
-            if (obj === null) {
-                return '';
-            }
-
-            // If this is array
-            if (obj instanceof Array) {
-                var arrayHtml = '';
-
-                for (var arrKey in obj) {
-                    arrayHtml += this.convertResponseDataToHtml(obj[arrKey]);
-                }
-
-                return arrayHtml;
-            }
-
-            // Else parse as object
-            var objectHtml = '';
-
-            // Construct object properties
-            var tableHead = '';
-            var tableBody = '';
-
-            if ('@type' in obj) {
-                var objType = obj['@type'];
-                tableHead += '<th colspan="2">' + objType + '</th>';
-            }
-
-            // Construct common rows
-            for (var k in obj) {
-                if (k === '@type')
-                    continue;
-
-                var keyHtml = '<td class="key">' + k + '</td>';
-                var valueHtml = obj[k];
-                if (typeof obj[k] === 'object') {
-                    valueHtml = this.convertResponseDataToHtml(obj[k]);
-                }
-                valueHtml = '<td>' + valueHtml + '</td>';
-                var rowHtml =
-
-                tableBody += '<tr>' + keyHtml + valueHtml + '</tr>'
-            }
-
-            objectHtml += '<table>' + tableHead + tableBody + '</table>';
-
-            return objectHtml;
-        },
-
-        parseResponseData: function (data) {
-            // If this is array -> parse each array element
             if (_.isArray(data)) {
-                var resultArray = [];
-
-                for (var i = 0; i < data.length; ++i) {
-                    resultArray.push(this.parseResponseData(data[i]));
+                for (i = 0; i < data.length; i++) {
+                    result += this.renderResponse(data[i], (i === data.length - 1));
                 }
-
-                return resultArray;
-            }
-
-            // if this is object ->
-            if (_.isObject(data)) {
-
-                // If literal (value, not key) -> just return
+            } else if (_.isObject(data)) {
                 if ('__orig_value' in data) {
-                    // Value building
-                    // var resultPairValue = JSON.stringify(data.__orig_value);
-                    var resultPairValue = data.__orig_value;
+                    result += '<td';
+                    result += ' title="' + _.escape(JSON.stringify(data.__value)) + '"';
 
                     if ('@id' in data.__value) {
-                        resultPairValue = '<a href="' + data.__value['@id'] + '">' + resultPairValue + '</a>';
+                        result += '><a href="' + data.__value['@id'] + '">';
+                    } else {
+                        result += ' class="literal">';
+                    }
+                    result += data.__orig_value;
+                    if ('@id' in data.__value) {
+                        result += '</a>';
                     }
 
-                    return resultPairValue;
+                    result += '</td>';
+
+                    return result;
                 }
 
-                // If not literal -> it is a key
-                var newResultObject = {};
+                // not a literal, start a new object
+                result += '<table>';
 
                 var keys = _.keys(data);
-                for (var i = 0; i < keys.length; i++) {
+                for (i = 0; i < keys.length; i++) {
                     var key = keys[i];
                     var value = data[key];
 
-                    if ('@context' === key || '@value' === key) {
-                        // do nothing
-                    }
-                    else if ('@type' === key) {
-                        var resultPairValue = value.__value.__orig_value;
-
-                        if ('@id' in value.__value.__value) {
-                            resultPairValue = resultPairValue.split('/');
-                            if (resultPairValue.length > 0)
-                                resultPairValue = resultPairValue[resultPairValue.length - 1];
-
-                            resultPairValue = '<a href="' + value.__value.__value['@id'] + '" target="_blank">' + resultPairValue + '</a>';
+                    if ('@context' === key) {
+                        result += '<tr><td colspan="2">@context<span class="context" data-content="<pre>';
+                        result += _.escape(JSON.stringify(value.__activectx, null, 2)).replace(/\n/g, '<br>');
+                        result += '</pre>">';
+                        result += _.escape(JSON.stringify(value.__value, null, 2)).replace(/\n/g, '<br>');
+                        result += '</span>';
+                        result += '</td></tr><br>';
+                    } else if ('@value' === key) {
+                        result += '<tr class="prop"><td class="prop-key" title="@value">@value</td>';
+                        result += this.renderResponse(value, (i === keys.length - 1));
+                        result += '</tr>';
+                        continue;
+                    } else {
+                        if (value.__iri) {
+                            var reverse = '';
+                            if ('^' === value.__iri[0]) {
+                                value.__iri = value.__iri.substr(1);
+                                reverse = 'reverse of ';
+                            }
+                            result += '<tr class="prop" data-iri="' + _.escape(value.__iri);
+                            result += '"><td class="prop-key" title="' + _.escape(reverse + value.__iri) + '">' + _.escape(key);
+                            result += '</td>';
+                        } else {
+                            result += '<tr class="not-mapped-prop"><td class="prop-key" title="not mapped to an IRI">';
+                            result += _.escape(key);
+                            result += '</td>';
                         }
 
-                        newResultObject['@type'] = resultPairValue;
-
-
-                    }
-                    else {
-                        newResultObject[key] = this.parseResponseData(value.__value);
+                        result += this.renderResponse(value.__value, (i === keys.length - 1));
+                        result += '</tr>';
                     }
                 }
-                return newResultObject;
-            }
-            // Else -> huy znaet what to do, just toString()
-            else {
-                return _.escape(JSON.stringify(data));
+                result += '</table>';
+            } else {
+                result += _.escape(JSON.stringify(data));
             }
 
-            return null;
+            return result;
         }
-
 
     });
 
@@ -436,16 +384,16 @@
         details: $("#documentation-details"),
         template: _.template($('#documentation-template').html()),
 
-        initialize: function () {
+        initialize: function() {
             this.model.bind('change:type', this.render, this);
             this.model.bind('change:vocab', this.updateAvailableTypes, this);
             this.model.bind('change:vocab', this.render, this);
 
             this.details.on("click", ".operations", function () {
-                window.HydraClient.showOperationsModal([$(this).attr('data-iri')], null);
+                window.HydraClient.showOperationsModal([ $(this).attr('data-iri') ], null);
             });
 
-            this.typesMenu.on("click", "a", function (e) {
+            this.typesMenu.on("click", "a", function(e) {
                 e.preventDefault();
                 window.HydraClient.showDocumentation(e.target.href);
             });
@@ -457,7 +405,7 @@
           "click .button.delete": "destroy"
         },*/
 
-        render: function () {
+        render: function() {
             var type = this.model.get('type');
             var vocab = this.model.get('vocab');
             var definition;
@@ -471,18 +419,18 @@
             } else {
                 this.title.attr('href', definition['@id']);
                 this.title.html('<h4>' + _.escape(definition.label) + ' <b class="caret"></b></h4>');
-                this.details.html(this.template({'docu': definition}));
+                this.details.html(this.template({ 'docu': definition }));
             }
             return this;
         },
 
-        updateAvailableTypes: function () {
+        updateAvailableTypes: function() {
             var types = this.model.getTypes();
             var menu = '';
 
             types = _.sortBy(types, 'label');
 
-            _.each(types, function (type) {
+            _.each(types, function(type) {
                 menu += '<li><a href="' + type['@id'] + '">' + _.escape(type.label) + '</a></li>';
             });
 
@@ -497,7 +445,7 @@
         dialog: $("#operationsModal"),
         template: _.template($('#operationsModal-template').html()),
 
-        initialize: function () {
+        initialize: function() {
             this.model.bind('change', this.render, this);
             this.model.bind('change:selected', this.operationSelected, this);
 
@@ -510,11 +458,11 @@
           "click .button.delete": "destroy"
         },*/
 
-        operationSelected: function () {
+        operationSelected: function() {
             var self = this;
             var selected = self.model.get('selected');
 
-            self.model.set({'expectsDef': null}, {silent: true});
+            self.model.set({ 'expectsDef' : null }, { silent: true });
 
             if (null !== selected) {
                 var expects = self.model.get('operations')[selected].expects;
@@ -522,30 +470,28 @@
                 if (expects) {
                     // TODO Handle case when type is not in vocab
                     self.model.set(
-                        {'expectsDef': self.options.documentation.getTypeDefinition(expects)},
-                        {silent: true}
+                        { 'expectsDef' : self.options.documentation.getTypeDefinition(expects) },
+                        { silent: true }
                     );
                 }
             }
         },
 
-        render: function () {
+        render: function() {
             var self = this;
 
             self.dialog.html(self.template(self.model.toJSON()));
 
             self.dialog.on("click", ".operation", function () {
-                self.model.set({'selected': $(this).attr('data-index')});
+                self.model.set({ 'selected': $(this).attr('data-index') });
             });
 
-            $('#operationsForm').on('submit', function () {
-                return self.onInvoke();
-            });
+            $('#operationsForm').on('submit', function() { return self.onInvoke(); });
 
             return this;
         },
 
-        onInvoke: function () {
+        onInvoke: function() {
             var self = this;
             var operation = self.model.get('operations')[self.model.get('selected')];
 
@@ -568,7 +514,7 @@
             return false;
         },
 
-        getRequestBody: function (expects) {
+        getRequestBody: function(expects) {
             if (!expects && (0 === $('#operationsForm textarea').length)) {
                 return null;
             }
@@ -582,13 +528,13 @@
 
             result['@context'] = {};
 
-            _.each(expects['properties'], function (property) {
+            _.each(expects['properties'], function(property) {
                 result['@context'][property['label']] = property['@id'];
             });
 
             result['@type'] = expects['@id'];
 
-            _.each(formData, function (element) {
+            _.each(formData, function(element) {
                 result[element.name] = ('' === element.value) ? null : element.value;
             });
 
@@ -602,9 +548,9 @@
         addressbar: new Hydra.Views.AddressBar(),
         documentation: {},
         response: {},
-        operationsModal: {widget: $('#operationsModal')},
+        operationsModal: { widget: $('#operationsModal') },
 
-        initialize: function () {
+        initialize: function() {
             $.ajaxSetup({
                 headers: {
                     'Accept': 'application/ld+json, application/json;q=0.1'
@@ -633,18 +579,18 @@
             return this;
         },
 
-        get: function (url) {
+        get: function(url) {
             this.request('GET', url);
         },
 
-        request: function (method, url, data) {
+        request: function(method, url, data) {
             var self = this;
 
             data = data || null;
 
             $('#load').removeClass('btn-inverse');
 
-            self.invokeRequest(method, url, data).done(function (resource, textStatus, jqXHR) {
+            self.invokeRequest(method, url, data).done(function(resource, textStatus, jqXHR) {
                 //self.vent.trigger('response', { resource: resource });
                 var linkHeaders = self.parseLinkHeader(jqXHR.getResponseHeader('Link'));
 
@@ -652,14 +598,14 @@
                     var apiDocUrl = linkHeaders['http://www.w3.org/ns/hydra/core#apiDocumentation'];
 
                     if (apiDocUrl !== self.documentation.model.get('vocabUrl')) {
-                        self.documentation.model.set({'vocab': null, 'vocabUrl': null});
+                        self.documentation.model.set({ 'vocab': null, 'vocabUrl': null });
 
-                        var jqxhr = $.getJSON('proxy.php', {'url': apiDocUrl, 'vocab': 1}, function (resource) {
+                        var jqxhr = $.getJSON('proxy.php', { 'url': apiDocUrl, 'vocab': 1 }, function(resource) {
                             //self.vent.trigger('response', { resource: resource });
                             var apiDoc = resource['@graph'];
-                            self.documentation.model.set({'vocab': apiDoc, 'vocabUrl': apiDocUrl});
-                        }).error(function () {
-                            self.documentation.model.set({'vocab': false, 'vocabUrl': null});
+                            self.documentation.model.set({'vocab': apiDoc, 'vocabUrl': apiDocUrl });
+                        }).error(function() {
+                            self.documentation.model.set({ 'vocab': false, 'vocabUrl': null });
                         });
                     }
                 }
@@ -687,27 +633,27 @@
                 } else {
                     self.addressbar.setUrl(url);
                 }
-            }).fail(function (jqXHR) {
+            }).fail(function(jqXHR) {
                 self.response.model.set({
                     data: null,
                     headers: self.getHeaders(jqXHR)
                 });
                 self.addressbar.setUrl(url);
-            }).always(function () {
+            }).always(function() {
                 $('#load').addClass('btn-inverse');
             });
         },
 
-        getHeaders: function (jqXHR) {
+        getHeaders: function(jqXHR) {
             return 'HTTP/1.1 ' + jqXHR.status + ' ' + jqXHR.statusText + "\n" + jqXHR.getAllResponseHeaders();
         },
 
-        invokeRequest: function (method, url, data, headers) {
+        invokeRequest: function(method, url, data, headers) {
             var self = this;
 
             var settings = {
                 'type': method || 'GET',
-                'headers': headers || {'Accept': 'application/ld+json, application/json;q=0.1'},
+                'headers': headers || { 'Accept': 'application/ld+json, application/json;q=0.1' },
                 'processData': false,
                 'data': data || null,
                 'dataType': 'text'
@@ -716,7 +662,7 @@
             return $.ajax('proxy.php?debug=true&url=' + encodeURI(url), settings);
         },
 
-        parseLinkHeader: function (header) {
+        parseLinkHeader: function(header) {
             var links = {};
 
             if (!header || (0 === header.trim().length)) {
@@ -725,7 +671,7 @@
 
             var parts = header.split(',');
 
-            for (var i = parts.length - 1; i >= 0; i--) {
+            for(var i = parts.length - 1; i >= 0; i--) {
                 var params = parts[i].split(';');
                 var url, rel;
                 for (var j = params.length - 1; j >= 0; j--) {
@@ -746,21 +692,21 @@
             return links;
         },
 
-        showDocumentation: function (url) {
+        showDocumentation: function(url) {
             var self = this;
 
             if ((undefined === url) || (null === url)) {
                 return;
             }
 
-            self.documentation.model.set({'type': url});
+            self.documentation.model.set({ 'type' : url });
         },
 
-        getElementDefinition: function (url, vocab) {
+        getElementDefinition: function(url, vocab) {
             return this.documentation.model.getElementDefinition(url, vocab);
         },
 
-        showOperationsModal: function (elements, target) {
+        showOperationsModal: function(elements, target) {
             var self = this;
 
             // Operations can
@@ -768,7 +714,7 @@
             //    - or the property
             //    - or be expressed in-line
             //
-            elements = _.filter(elements, function (element) {
+            elements = _.filter(elements, function(element) {
                 return ((undefined !== element) && (null !== element));
             });
 
@@ -777,12 +723,12 @@
             }
 
             var operations = [];
-            var showModal = _.after(elements.length, function () {
+            var showModal = _.after(elements.length, function() {
                 self.operationsModal.model.update(operations, target);
                 self.operationsModal.widget.modal('show');
             });
 
-            _.each(elements, function (elementIri) {
+            _.each(elements, function(elementIri) {
                 var element = self.documentation.model.getElementDefinition(elementIri);
 
                 if (element) {
@@ -798,6 +744,7 @@
 
     window.HydraClient = Hydra.Client.initialize();
 })();
+
 
 
 // ---- Activate tooltips and popovers
@@ -826,7 +773,7 @@ $('#response').on("mouseleave", ".prop", function (event) {
 });
 
 
-$(document).ready(function () {
+$(document).ready(function() {
     // window.HydraClient.showDocumentation();
     // //window.HydraClient.get('http://hydra.test/app_dev.php/');
     // window.HydraClient.get('http://www.markus-lanthaler.com/hydra/api-demo/');

@@ -49,6 +49,39 @@
     tr.request td, tr.request th {
       background-color: #f5f5f5;
     }
+
+    /* Custom response div styles */
+
+    #response {
+        border: 1px solid grey;
+        padding: 20px;
+    }
+
+    #response table {
+        border: 1px solid grey;
+        margin: 0 auto 10px auto;
+    }
+
+    #response table td {
+        padding: 7px;
+        border: 1px solid grey;
+    }
+
+    #response table th {
+        background-color: #d2d2d2;
+        border-bottom: 1px solid grey;
+    }
+
+    #response .obj-title {
+        text-align: center;
+        /*color: red;*/
+    }
+
+    #response .key {
+        text-align: right;
+        vertical-align: top;
+    }
+
   </style>
 </head>
 <body>
@@ -82,7 +115,7 @@
            <button type="button" class="close" data-dismiss="alert">&times;</button>
           <strong>Warning</strong>
         </div> -->
-<pre id="response">
+<div id="response">
 Hi,
 
 This is the Hydra Console - a generic client for Hydra-powered Web APIs. The
@@ -105,7 +138,7 @@ target of a link, simply press the SHIFT-key while clicking on a link.
 To get started, enter the URL of the API in the address bar above and click
 on &quot;Load&quot;. If you wish, you can use the demo API featuring a simple issue
 tracker at <a href="http://www.markus-lanthaler.com/hydra/event-api/" data-action="GET">http://www.markus-lanthaler.com/hydra/event-api/</a>.
-</pre>
+</div>
 <!--          <div id="pagination" class="pull-right">
           <a class="btn btn-info btn-small" href="#"><i class="icon-chevron-left icon-white"></i></a>
           <a class="btn btn-info btn-small" href="#"><i class="icon-chevron-right icon-white"></i></a>

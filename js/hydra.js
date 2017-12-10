@@ -287,6 +287,40 @@
                     'html': true
                 });
                 // Visual corrections of the table
+                // Tr sorting
+                $('#response').find('table').each(function () {
+                    var table = $(this);
+
+                    var rowsToSort = table.children('tbody').children('tr').get();
+                    rowsToSort.sort(function(a, b) {
+
+                        var A = $(a).children('td').eq(0).text().toUpperCase();
+                        var B = $(b).children('td').eq(0).text().toUpperCase();
+
+                        if(A < B) {
+                            return -1;
+                        }
+
+                        if(A > B) {
+                            return 1;
+                        }
+
+                        return 0;
+
+                    });
+
+                    $.each(rowsToSort, function(index, row) {
+                        table.children('tbody').append(row);
+                    });
+                });
+
+
+
+
+
+
+
+                // Header
                 $('#response').find('table').each(function () {
                     var table = $(this);
                     table.find('td').each(function () {

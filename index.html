@@ -1,385 +1,94 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Hydra Web UI</title>
-  <meta charset="utf-8" />
-  <link href="css/bootstrap.min.css" rel="stylesheet">
-  <style>
-    .page-header {
-      margin: 15px 0;
-      padding-bottom: 5px;
-    }
-    .navbar-form label {
-      margin-bottom: 0;
-      line-height: 30px;
-      vertical-align: bottom;
-    }
-    .btn-mini [class^="icon-"], .btn-mini [class*=" icon-"] {
-      margin-top: 0;
-    }
-    tr.prop-highlight td, tr.prop-highlight th {
-      background-color: #f5f5f5;
-    }
-    .popover {
-      width:auto;
-    }
-    .table.no-border th, .table.no-border td {
-      border-top: none;
-    }
-    #addressbar > label {
-      line-height: 30px;
-      vertical-align: bottom;
-    }
-    #addressbar input {
-      width: 675px;
-    }
-    #operationsModal {
-      width: 700px;
-      margin-left: -350px;
-    }
-    #operationsModal-body {
-      min-height: 250px;
-    }
-    #response .not-mapped-prop {
-      color: #aaa;
-    }
-    #response .context, #response .prop-key, #response .literal {
-      cursor: help;
-    }
-    tr.request td, tr.request th {
-      background-color: #f5f5f5;
-    }
+    <meta charset="UTF-8">
+    <title>Library WEB UI</title>
 
-    /* Custom response div styles */
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/app.css" rel="stylesheet">
 
-    #response {
-        border-top: 1px solid grey;
-        padding: 20px;
-    }
+    <script src="js/jquery.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/underscore.min.js"></script>
+    <script src="js/backbone.min.js"></script>
+    <!--<script src="js/hydra.js"></script>-->
+    <!-- app scripts (stupid way, but Im lazy) -->
+    <script src="js/app/app.js"></script>
+    <script src="js/app/screen-controller.js"></script>
+    <script src="js/app/util-requests.js"></script>
+    <script src="js/app/overlay.js"></script>
 
-    #response table {
-        border: 1px solid grey;
-        /*margin: 0 auto 10px auto;*/
-        margin: 5px;
-    }
-
-    #response table td {
-        padding: 7px;
-        border: 1px solid grey;
-    }
-
-    #response table th {
-        background-color: #d2d2d2;
-        border-bottom: 1px solid grey;
-    }
-
-    #response table td {
-        background-color: #f9f9f9;
-    }
-
-    #response .obj-title {
-        text-align: center;
-        /*color: red;*/
-    }
-
-    #response .key {
-        text-align: right;
-        vertical-align: top;
-    }
-
-    #response p {
-        font-size: 16px;
-        line-height: 1.6;
-        margin-bottom: 20px;
-    }
-
-    /*table tr div.tooltip {*/
-      /*position: absolute !important;*/
-      /*display: none;*/
-    /*}*/
-
-  </style>
+    <!-- Font awesome -->
+    <script src="https://use.fontawesome.com/33dcaa9be8.js"></script>
 </head>
 <body>
-  <div class="container-fluid">
-    <div class="page-header">
-      <h1>Hydra Web UI</h1>
-      <p>
-          Web UI application for viewing and operating data with Hypermedia driven API.
-      </p>
 
+<div id="overlay">
+    <div>
+        <i class="fa fa-refresh fa-spin fa-3x fa-fw"></i>
+        <span class="desc">Loading...</span>
     </div>
-    <div class="navbar">
-      <div class="navbar-inner">
-        <div class="row-fluid">
-          <div class="span12">
-            <form id="addressbar" class="navbar-form form-inline">
-              <label for="url">Enter an URL:</label>
-              <div class="input-append">
-                <input id="url" type="text" class="input-xxlarge" placeholder="http://">
-                <button id="load" class="btn btn-inverse" data-loading-text="Loading..."><i class="icon-refresh icon-white"></i> Load</button>
-              </div>
-            </form>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="row-fluid">
-      <div class="span6">
-        <div class="row-fluid">
-            <h4 class="span5">Response</h4>
-            <h4 class="span7" style="text-align: right;">
-                <label>
-                    <input type="checkbox" id="hide-add-info">
-                    <span style="position: relative; top:3px;">Hide additional info</span>
-                </label>
-            </h4>
-        </div>
-<div id="response">
-    <p>Welcome to Hydra Web UI!</p>
-
-    <p>
-        This is a generic client for Hydra-powered Web APIs. The
-        user interface consists of three parts: the address bar on the top, this
-        response pane, and the documentation pane.
-    </p>
-
-    <p>
-        The address bar allows you to enter an URL to access
-        the Web API. The response will then be rendered in the response pane and
-        in the pane to the right you'll find the corresponding documentation.
-    </p>
-
-    <p>When you move your mouse over a property, the corresponding item in the
-        documentation will be highlighted. Additionally, a tooltip with the full IRI
-        of the property will be shown. If you move your mouse over a context
-        definition, the active context at that level will be shown.
-    </p>
-
-    <p>
-        All links are blue and underlined. To invoke an operation, simply click on
-        it and follow the instructions. If you want to browse an API and GET the
-        target of a link, simply press the SHIFT-key while clicking on a link.
-    </p>
-
-    <p>
-        To get started, enter the URL of the API in the address bar above and click
-        on &quot;Load&quot;. You can use these APIs:
-    <ul>
-        <li>Library (books) Web API: <a href="https://library-service-books.herokuapp.com/api/" data-action="GET">https://library-service-books.herokuapp.com/api/</a></li>
-        <li>Library (articles) Web API: <a href="https://library-service-articles.herokuapp.com/api/" data-action="GET">https://library-service-articles.herokuapp.com/api/</a></li>
-        <li>Demo Web API by Markus Lanthaler: <a href="http://www.markus-lanthaler.com/hydra/event-api/" data-action="GET">http://www.markus-lanthaler.com/hydra/event-api/</a></li>
-    </ul>
-    </p>
-
 </div>
 
-<!--          <div id="pagination" class="pull-right">
-          <a class="btn btn-info btn-small" href="#"><i class="icon-chevron-left icon-white"></i></a>
-          <a class="btn btn-info btn-small" href="#"><i class="icon-chevron-right icon-white"></i></a>
-        </div> -->
-        <br class="clearfix">
-      </div>
-      <div id="documentation" class="span6">
-        <div class="clearfix">
-          <h4 class="pull-left">Documentation:&nbsp;</h4>
-          <div class="dropdown pull-left">
-            <a id="documentation-title" class="dropdown-toggle" data-toggle="dropdown" data-trigger="hover" data-target="#"></a>
-            <ul class="dropdown-menu">
-            </ul>
-          </div>
-        </div>
+<div id="current-screen">
+    <div class="fs-wrapper">
 
-        <div id="documentation-details">
-          <p>Hydra API documentation not available.</p>
-      </div>
-    </div>
-  </div>
-</div>
+        <h1>Library WEB UI</h1>
 
-<div class="modal hide fade" id="operationsModal" tabindex="-1" role="dialog">
-<script type="underscore/template" id="operationsModal-template">
-  <form id="operationsForm" class="modal-form">
-    <div class="modal-header">
-      <button type="button" class="close" data-dismiss="modal">&times;</button>
-    <% if (target) { %>
-      <h3>Invoke an Operation</h3>
-    <% } else { %>
-      <h3>Documented Operations</h3>
-    <% } %>
-    </div>
-    <div id="operationsModal-body" class="modal-body">
-      <% if (target) { %>
-      <form>
-      <table class="table no-border">
-        <tr>
-          <td>Target IRI:</td>
-          <td><code><%= target %></code></td>
-        </tr>
-      <% } else { %>
-      <table class="table no-border">
-      <% } %>
-        <tr>
-          <td>Operation:</td>
-          <td>
-            <div class="dropdown">
-              <% if ((null !== selected) && (selected < operations.length)) { %>
-                <span class="label label-info"><%= operations[selected].method %></span>
-                <a class="dropdown-toggle" data-toggle="dropdown" data-trigger="hover" href="#"><% if (operations[selected].label) { %><%= operations[selected].label %><% } else { %><span class="muted">no documentation available</span><% } %> <b class="caret"></b></a>
-              <% } else { %>
-                <a class="dropdown-toggle" data-toggle="dropdown" data-trigger="hover" href="#">Select an operation <b class="caret"></b></a>
-              <% } %>
-              <ul class="dropdown-menu">
-              <% _.each(operations, function(operation, index) { %>
-                <li><a href="#" class="operation" data-index="<%= index %>"><span class="label<% if (true !== operation.isDefault) print(' label-info'); %>"><%= operation.method %></span>
-                  <% if (operation.label) { %><%= operation.label %><% } else { %><span class="muted">no documentation available</span><% } %></a></li>
-              <% }); %>
-              </ul>
+
+        <div>
+
+            <div class="navbar">
+                <div class="navbar-inner">
+                    <div class="row-fluid">
+                        <div class="span12">
+                            <form class="addressbar navbar-form form-inline">
+                                <label>Enter an EntryPoint URL:</label>
+                                <div class="input-append">
+                                    <input type="text" class="url input-xxlarge" placeholder="http://">
+                                    <button id="load" class="btn btn-inverse" data-loading-text="Loading...">
+                                        <i class="icon-refresh icon-white"></i> Load service
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
             </div>
-          </td>
-        </tr>
-      <% if (selected) { %>
-        <tr>
-          <td>Type:</td>
-          <td><% if (operations[selected]['@type']) { %>
-            <a href="<%- operations[selected]['@type'] %>" target="_blank"><%- operations[selected]['@type'] %></a>
-          <% } else { %>
-            <span class="muted">hydra:Operation</span>
-          <% } %></td>
-        </tr>
-        <% if (operations[selected].description) { %>
-        <tr>
-          <td>Description:</td>
-          <td><%- operations[selected].description %></td>
-        </tr>
-        <% } %></td>
-        <tr>
-          <td>Expects:</td>
-          <td><% if (operations[selected].expects) { %>
-            <code title="<%- operations[selected].expects %>"><%- (operations[selected].expectsLabel) ? operations[selected].expectsLabel : operations[selected].expects %></code>
-          <% } else { %>
-            <span class="muted">n/a</span>
-          <% } %></td>
-        </tr>
-        <tr>
-          <td>Returns:</td>
-          <td><% if (operations[selected].returns) { %>
-            <code title="<%- operations[selected].returns %>"><%- (operations[selected].returnsLabel) ? operations[selected].returnsLabel : operations[selected].returns %></code>
-          <% } else { %>
-            <span class="muted">n/a</span>
-          <% } %></td>
-        </tr>
-        <tr>
-          <td>Status Codes:</td>
-          <td><% if (operations[selected].statusCodes && (operations[selected].statusCodes.length > 0)) { %>
-            <% _.each(operations[selected].statusCodes, function(statusCode) { %>
-              <code><%- statusCode.code %></code> <%- statusCode.description %>
-            <% }); %>
-          <% } else { %>
-            <span class="muted">n/a</span>
-          <% } %></td>
-        </tr>
-        <% if (target && (('POST' == operations[selected].method) || ('PUT' == operations[selected].method))) { %>
-        <tr class="request">
-          <th colspan="2">Request Data</th>
-        </tr>
-        <% if (expectsDef) { %>
-        <% _.each(expectsDef.properties, function(property) { %>
-        <% if (!property.readonly) { %>
-        <tr class="request">
-          <th><label for="<%- property.label %>"><%- property.label %></label></th>
-          <td>
-            <input type="text" name="<%- property.label %>" class="input-xlarge" placeholder="<%- property.description %>" />
-          </td>
-        </tr>
-        <% } %>
-        <% }); %>
-        <% } else { %>
-        <!--<tr class="request">
-          <th><label for="headers">Request headers</label></th>
-          <td>
-            <textarea rows="3" class="input-xlarge" name="headers" placeholder="Type in the request headers. They will be sent as-is">Content-Type: application/ld+json</textarea>
-          </td>
-        </tr>-->
-        <tr class="request">
-          <th><label for="body">Request body</label></th>
-          <td>
-            <textarea rows="10" class="input-xlarge" name="body" placeholder="Type in the request body. It will be sent as-is"></textarea>
-          </td>
-        </tr>
-        <% } %>
-        <% } %>
-      <% } %>
-      </table>
-      <% if (target) { %>
-      <% } %>
+
+            <p>
+                To get started, enter the URL of the API EntryPoint in the address bar above and click
+                on &quot;Load&quot;. You can use these APIs:
+            <ul>
+                <li>Library (books) Web API:
+                    <a href="javascript:Service.load('https://library-service-books.herokuapp.com/api/');"
+                       data-action="GET">https://library-service-books.herokuapp.com/api/</a>
+                </li>
+                <li>Library (articles) Web API:
+                    <a href="javascript:Service.load('https://library-service-articles.herokuapp.com/api/');"
+                       data-action="GET">
+                        https://library-service-articles.herokuapp.com/api/
+                    </a>
+                </li>
+                <li>Locally runned service:
+                    <a href="javascript:Service.load('http://127.0.0.1:8080/api/');"
+                       data-action="GET">
+                        http://127.0.0.1:8080/api/
+                    </a>
+                </li>
+            </ul>
+            </p>
+        </div>
+
     </div>
-    <div class="modal-footer">
-    <% if (target) { %>
-      <button class="btn btn-primary">Invoke</button>
-    <% } %>
-      <a href="#" class="btn" data-dismiss="modal">Close</a>
-    </div>
-  </form>
-</script>
+
 </div>
 
-<script type="underscore/template" id="documentation-template" style="display:none">
-  <%
-    if (!docu.description)
-      docu.description = '';
-    if (!docu.supportedOperations)
-      docu.supportedOperations = [];
-  %>
-  <p><%= docu.description.replace(/\n/g, '<br>') %></p>
-  <table class="table table-hover">
-    <tbody>
-      <tr>
-        <th width="50">@id</th>
-        <td width="50">
-          <code>IRI</code>
-          <br /><small class="muted">readonly</small>
-        </td>
-        <td>
-          The entity&#039;s IRI
-          <% if (docu.supportedOperations.length > 0) { %>
-          <p><a class="btn btn-link btn-small operations" data-iri="<%- docu['@id'] %>" href="#"><i class="icon-tags icon"></i> Operations</a></p>
-          <% } %>
-        </td>
-      </tr>
-      <% _.each(docu.properties, function(property) {
-        if (!property.description)
-          property.description = '';
-        if (!property.supportedOperations)
-          property.supportedOperations = [];
-      %>
-      <tr id="<%= property['@id'] %>">
-        <th title="<%- property['@id'] %>"><%= property.label %></th>
-        <td>
-          <code title="<%- property.range %>"><% if (property.range) { print(_.escape((property.rangeLabel) ? property.rangeLabel : property.range)); } else { print('<span class="muted">n/a</span>'); }; %></code>
-          <% if (property.readonly) { %><br /><small class="muted">readonly</small><% } %>
-          <% if (property.writeonly) { %><br /><small class="muted">writeonly</small><% } %>
-        </td>
-        <td>
-          <%= property.description.replace(/\n/g, '<br>') %><% if (property.supportedOperations.length > 0) { %><br />
-          <a class="btn btn-link btn-small operations" data-iri="<%- property['@id'] %>" href="#"><i class="icon-tags icon"></i> Operations</a>
-          <% } %>
-        </td>
-      </tr>
-      <% }); %>
-      </tbody>
-    </table>
+<div id="response"></div>
+
+<script>
+    buildFirstScreen();
 </script>
 
-<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
-<script src="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/2.2.2/bootstrap.min.js"></script>
-<script src="//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.4.3/underscore-min.js"></script>
-<script src="//cdnjs.cloudflare.com/ajax/libs/backbone.js/0.9.10/backbone-min.js"></script>
-<script src="js/hydra.js"></script>
-
-<p style="text-align: center;">
-    Rutin V.A., master's degree student, SPb NRU ITMO, 2017.<br>
-    Based on the original <a href="https://github.com/lanthaler/HydraConsole" target="_blank">HydraConsole</a> application.
-</p>
 </body>
 </html>

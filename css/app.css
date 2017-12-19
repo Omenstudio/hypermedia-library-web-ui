@@ -1,0 +1,54 @@
+body {
+    background-color: #efefef;
+}
+
+
+/* First screen */
+.fs-wrapper {
+    background-color: white;
+    width: 900px;
+    margin: 0 auto;
+    padding: 50px;
+}
+
+.fs-wrapper h1 {
+    margin-bottom: 20px;
+}
+
+.addressbar {
+    margin-top: 5px;
+}
+
+.addressbar .input-append {
+    margin-top: 0;
+}
+
+/* Overlay and modals */
+#overlay {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 10000;
+
+
+    display: grid;
+    justify-items: center;
+    align-items: center;
+
+    text-align: center;
+    color: #ffffff;
+}
+
+#overlay .fa {
+    font-size: 64px;
+}
+
+#overlay .desc {
+    display: block;
+    font-size: 32px;
+    margin-top: 20px;
+    padding-left: 10px;
+}

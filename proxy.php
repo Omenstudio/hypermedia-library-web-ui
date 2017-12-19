@@ -74,7 +74,6 @@ function parseContextLinkHeaders(array $values, IRI $baseIri)
 $options = new \stdClass();
 $options->base = $_GET['url'];
 
-$debug = isset($_GET['debug']) ? (boolean)$_GET['debug'] : false;
 $frame = isset($_GET['vocab']) ? (boolean)$_GET['vocab'] : false;
 
 $debugExpansion = function(&$document, &$headers)
@@ -222,11 +221,11 @@ $frameApiDocumentation = function(&$document, &$headers)
 
 $proxy = new AjaxProxy();
 
-if ($debug) {
-  $proxy->setResponseModifier($debugExpansion);
-} elseif ($frame) {
+if ($frame) {
   $proxy->setResponseModifier($frameApiDocumentation);
-
+}
+else {
+  $proxy->setResponseModifier($debugExpansion);
 }
 
 $proxy->execute();

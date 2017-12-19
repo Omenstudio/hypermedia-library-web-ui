@@ -174,6 +174,7 @@ $frameApiDocumentation = function(&$document, &$headers)
       "description": "rdfs:comment",
       "hydra_title": "hydra:title",
       "hydra_description": "hydra:description",
+      "member_of": "hydra:member_of",
       "domain": { "@id": "rdfs:domain", "@type": "@id" },
       "range": { "@id": "rdfs:range", "@type": "@id" }
     },

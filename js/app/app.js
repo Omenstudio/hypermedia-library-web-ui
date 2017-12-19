@@ -26,19 +26,36 @@ Service._findLinksToEntities = function (url) {
 
         // Do something, man! Don't procrastinate
         resource = JSON.parse(resource);
-        var t1 = resource['@type'].__value.__value['@id'];
-        console.log(t1);
+        var currentUrlId = resource['@type'].__value.__value['@id'];
 
-        console.log(Service.doc);
-        console.log(Service.doc[t1]);
+        // Iterate over given response
+        // and try to find Entity collection
+        for(var key in resource) {
+            // skip if this is not regular field
+            if (key[0] === '@') {
+                continue;
+            }
+
+            // TODO add support for arrays, now it fails
+            var value = resource[key];
+            var elemUrl = value.__value.__value['@id'];
+            var elemType = Service.doc[value.__iri]['range'];
+            var memberOf = Service.doc[elemType]['member_of'];
+            console.log(memberOf + " : " + elemUrl + " : " + elemType);
+
+
+
+
+        }
+
+        // console.log(resource);
+        // console.log(t1);
+        // console.log(Service.doc);
+        // console.log(Service.doc[t1]);
 
 
         // Then run dfs on service's URLs to find available collections
         //
-
-        //
-        $('#response').html(resource);
-        hideOverlay();
 
         //
 

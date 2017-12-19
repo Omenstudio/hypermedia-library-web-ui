@@ -3,7 +3,7 @@
 
 function buildFirstScreen() {
     // Inject to page
-    $('#current-screen').html(data);
+    // $('#current-screen').html(data);
 
     // Fill url param
     var queryParams = {};

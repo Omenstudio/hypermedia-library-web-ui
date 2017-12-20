@@ -2,14 +2,14 @@ body {
     background-color: #efefef;
 }
 
-
-/* First screen */
-.fs-wrapper {
+.wrapper {
     background-color: white;
-    width: 900px;
+    width: 1200px;
     margin: 0 auto;
     padding: 50px;
 }
+
+/* First screen */
 
 .fs-wrapper h1 {
     margin-bottom: 20px;
@@ -51,4 +51,18 @@ body {
     font-size: 32px;
     margin-top: 20px;
     padding-left: 10px;
+}
+
+
+/* Some shit */
+#main-content {
+    //
+}
+
+
+/* Control buttons group */
+.control-buttons {
+    text-align: center;
+    margin-top: 20px;
+    margin-bottom: 10px;
 }

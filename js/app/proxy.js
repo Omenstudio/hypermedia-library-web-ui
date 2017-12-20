@@ -11,7 +11,7 @@ function invokeRequest(method, url, data, headers) {
         'async': false
     };
 
-    return $.ajax('proxy.php?debug=true&url=' + encodeURI(url), settings);
+    return $.ajax('proxy.php?url=' + encodeURI(url), settings);
 }
 
 function getHeaders(jqXHR) {
@@ -76,6 +76,16 @@ function loadDocumentation(apiDocUrl) {
         error: function () {
             alert('Failed to parse vocab');
         }
+    });
+
+    return result;
+}
+
+function loadRegularUrl(url) {
+    var result = [];
+
+    invokeRequest('GET', url).done(function (data) {
+        result = JSON.parse(data);
     });
 
     return result;

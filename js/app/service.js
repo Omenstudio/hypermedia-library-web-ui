@@ -1,35 +1,17 @@
 var Service = {};
 
-Service.entities = [];
-
 Service.doc = 'nothing';
 
 Service.load = function (url) {
     showOverlay();
     // We need to make async call
     setTimeout(function () {
-        Service._buildEntityModels();
-        Service._findLinksToCollections(url);
+        Service._parseEntryPointAndDocumentation(url);
         hideOverlay();
     }, 1);
 };
 
-
-Service._buildEntityModels = function () {
-    Service.entities = [];
-
-    $('.control-buttons').find('.btn').each(function () {
-        var obj = $(this);
-        var iri = obj.attr('data-iri');
-        Service.entities[iri] = obj;
-
-        obj.attr('disabled', 'disabled');
-        obj.attr('title', 'Not mapped in current service');
-    });
-
-};
-
-Service._findLinksToCollections = function (url) {
+Service._parseEntryPointAndDocumentation = function (url) {
     // Suppose, that links to collections located in EntryPoint
     // So, we need to get EntryPoint items
     // and find which of they are hyperlinks to our collections
@@ -57,77 +39,25 @@ Service._findLinksToCollections = function (url) {
                 continue;
             }
 
-            // Detect url, type, and
+            // Detect url, type, and collection item
+
             var item = resource[entryPointItemKey];
             var itemUrl = item.__value.__value['@id'];
             var itemType = Service.doc[item.__iri]['range'];
             var memberOf = Service.doc[itemType]['member_of'];
             var description = Service.doc[itemType]['description'];
 
-            for (var entityKey in Service.entities) {
-                if (entityKey === memberOf) {
-                    var obj = Service.entities[entityKey];
-                    obj.attr('data-url', itemUrl);
-                    obj.removeAttr('disabled');
-                    obj.attr('title', description ? description : '');
+            for (var i=0, model = Models[i]; i<Models.length; ++i, model = Models[i]) {
+                if (model.id === memberOf) {
+                    model.collectionUrl = itemUrl;
+                    model.mapped = true;
                 }
-            }
-
-            //
-            if (memberOf !== 'undefined') {
-
-            }
-
-
-            console.log(memberOf + " : " + itemUrl + " : " + itemType);
-
-
-
-
-        }
-
-
-
-        // console.log(resource);
-        // console.log(t1);
-        console.log(Service.doc);
-        // console.log(Service.doc[t1]);
-
-
-        // Then run dfs on service's URLs to find available collections
-        //
-
-        //
-
-
-        // if (resource.trim().length > 0) {
-        //     resource = JSON.parse(resource);
-        //
-        //     self.response.model.set({
-        //         data: resource,
-        //         headers: self.getHeaders(jqXHR)
-        //     });
-        //
-        //     if (_.isObject(resource) && ('@type' in resource)) {
-        //         self.showDocumentation(resource['@type'].__value.__value['@id']);
-        //     }
-        // } else {
-        //     self.response.model.set({
-        //         data: null,
-        //         headers: self.getHeaders(jqXHR)
-        //     });
-        // }
-        //
-        // if (jqXHR.getResponseHeader('Content-Location')) {
-        //     self.addressbar.setUrl(jqXHR.getResponseHeader('Content-Location'));
-        // } else {
-        //     self.addressbar.setUrl(url);
-        // }
+            }}
     });
-
-
-
 };
+
+
+
 
 
 

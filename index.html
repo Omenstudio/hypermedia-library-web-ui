@@ -14,9 +14,9 @@
     <!--<script src="js/hydra.js"></script>-->
     <!-- app scripts (stupid way, but Im lazy) -->
     <script src="js/app/service.js"></script>
-    <script src="js/app/screen-controller.js"></script>
-    <script src="js/app/util-requests.js"></script>
-    <script src="js/app/overlay.js"></script>
+    <script src="js/app/app.js"></script>
+    <script src="js/app/proxy.js"></script>
+    <script src="js/app/models.js"></script>
 
     <!-- Font awesome -->
     <script src="https://use.fontawesome.com/33dcaa9be8.js"></script>
@@ -31,11 +31,12 @@
 </div>
 
 <div class="wrapper">
+    <h1>Library WEB UI</h1>
+
     <div id="first-screen">
         <div class="fs-wrapper">
+            <br>
             <div>
-                <h1>Library WEB UI</h1>
-
                 <div>
 
                     <div class="navbar">
@@ -88,26 +89,28 @@
 
         <div class="control-buttons">
             <div class="btn-group" role="group" aria-label="Control buttons">
-                <button type="button" class="btn btn-secondary" data-iri="http://schema.org/Article">Articles</button>
-                <button type="button" class="btn btn-secondary" data-iri="http://schema.org/Book">Books</button>
-                <button type="button" class="btn btn-secondary" data-iri="http://schema.org/Person">Authors</button>
-                <button type="button" class="btn btn-secondary" data-iri="http://schema.org/Publisher">Publishers</button>
+                <button type="button" class="btn" onclick="App.showArticles()">Articles</button>
+                <button type="button" class="btn" onclick="App.showBooks()">Books</button>
+                <button type="button" class="btn" onclick="App.showAuthors()">Authors</button>
+                <button type="button" class="btn" onclick="App.showPublishers()">Publishers</button>
             </div>
         </div>
 
 
+        <div class="service-content">
 
+            <div class="service-item-list"></div>
+
+            <div class="service-item-content"></div>
+
+        </div>
 
 
     </div>
 
 </div>
 
-</div>
 
-<script>
-    buildFirstScreen();
-</script>
 
 </body>
 </html>

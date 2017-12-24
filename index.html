@@ -5,7 +5,7 @@
     <title>Library WEB UI</title>
 
     <link href="css/bootstrap.min.css" rel="stylesheet">
-    <link href="css/app.css" rel="stylesheet">
+    <link href="css/app.min.css" rel="stylesheet">
 
     <script src="js/jquery.min.js"></script>
     <script src="js/bootstrap.min.js"></script>
@@ -13,13 +13,10 @@
     <script src="js/backbone.min.js"></script>
     <!--<script src="js/hydra.js"></script>-->
     <!-- app scripts (stupid way, but Im lazy) -->
-    <script src="js/app/service.js"></script>
-    <script src="js/app/app.js"></script>
-    <script src="js/app/proxy.js"></script>
-    <script src="js/app/models.js"></script>
+    <script src="js/app.min.js"></script>
 
     <!-- Font awesome -->
-    <script src="https://use.fontawesome.com/33dcaa9be8.js"></script>
+    <!--<script src="https://use.fontawesome.com/33dcaa9be8.js"></script>-->
 </head>
 <body>
 
@@ -99,17 +96,109 @@
 
         <div class="service-content">
 
-            <div class="service-item-list"></div>
+            <div class="service-item-list">
 
-            <div class="service-item-content"></div>
+                <div class="article-collection">
+
+                    <div class="control-buttons">
+                        <button class="btn btn-info" onclick="App.addArticle()">Add new Article</button>
+                    </div>
+
+
+                    <ul>
+                        <li>
+                            <a href="javascript:App.showElement(0)">
+                                <table>
+                                    <tr><th>Title:</th><td>Play and learning in early childhood education in Sweden</td></tr>
+                                    <tr><th>Authors:</th><td>Vasily Rutin</td></tr>
+                                    <tr></tr>
+                                    <tr></tr>
+                                </table>
+                            </a>
+                        </li>
+                        <li class="active"><a href="javascript:App.showElement(1)">Software tools for organization and
+                            support of
+                            distance
+                            learning game system «3Ducation»</a></li>
+                        <li><a href="javascript:App.showElement(2)">Remediation of learning disable children following
+                            L. S.
+                            Vygotskys approach</a></li>
+                        <li><a href="javascript:App.showElement(3)">Combined Use of Command-Proportional Control of
+                            External
+                            Robotic Devices Based on Electromyography Signals</a></li>
+                        <li><a href="javascript:App.showElement(4)">Museums as spaces and times for learning and social
+                            participation</a></li>
+                        <li><a href="javascript:App.showElement(5)">Students’ development in the learning process</a>
+                        </li>
+                        <li><a href="javascript:App.showElement(6)">The Role of Companies in Human Capital Accumulation:
+                            A
+                            Cross-Country Analysis</a></li>
+                        <li><a href="javascript:App.showElement(7)">Creating test data for market surveillance systems
+                            with
+                            Embedded machine learning algorithms</a></li>
+                        <li><a href="javascript:App.showElement(8)">Low-molecular-weight NGF mimetic corrects the
+                            cognitive
+                            deficit and depression-like behavior in experimental diabetes</a></li>
+                        <li><a href="javascript:App.showElement(9)">Play and playfulness in early childhood education
+                            and
+                            care</a></li>
+                        <li><a href="javascript:App.showElement(10)">Problem solution as a guided activity with Mexican
+                            schoolchildren</a></li>
+                        <li><a href="javascript:App.showElement(11)">Development of children’s early understanding of
+                            numeric structure</a></li>
+                        <li><a href="javascript:App.showElement(12)">Psychological prerequisites and effects of using
+                            multimedia content in the mass media</a></li>
+                        <li><a href="javascript:App.showElement(13)">Patent Landscape for Nanotechnology</a></li>
+                        <li><a href="javascript:App.showElement(14)">test title</a></li>
+                        <li><a href="javascript:App.showElement(15)">asfasf</a></li>
+                        <li><a href="javascript:App.showElement(16)">asfasfasf</a></li>
+                    </ul>
+
+
+                </div>
+            </div>
+
+            <div class="service-item-content">
+                <div class="article-item-content">
+
+                    <div class="control-buttons">
+                        <button class="btn btn-warning" onclick="App.addArticle()">Edit</button>
+                        <button class="btn btn-danger" onclick="App.addArticle()">Remove</button>
+                    </div>
+
+                    <ul>
+                        <li>Students’ development in the learning process</li>
+                        <li>The study endeavors to identify the components of certain abilities consciously acquired
+                            by
+                            a
+                            student in the process of learning. The study was arranged in two directions: the
+                            teaching
+                            of
+                            students to master intellectual operations and use them in their work with training
+                            materials,
+                            and psychological testing of control and experimental student groups before and after
+                            training
+                            tests
+                        </li>
+                        <li>62</li>
+                        <li>67</li>
+                        <li>153</li>
+                        <li>/api/articles/91</li>
+                        <li>undefined</li>
+                        <li>Article</li>
+                        <li>undefined</li>
+                        <li>undefined</li>
+                    </ul>
+
+                </div>
+
+
+            </div>
+
 
         </div>
 
-
     </div>
-
-</div>
-
 
 
 </body>

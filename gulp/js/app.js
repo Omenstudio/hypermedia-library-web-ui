@@ -44,13 +44,15 @@ App.initialize = function () {
 
 
 App.showArticles = function () {
-    $('.service-item-list').text('Articles');
+    showOverlay();
+    // We need to make async call
+    setTimeout(function () {
+        App.currentModel = Article;
+        App.loadDataFromService(Article);
+        App.buildCollectionView(Article);
 
-    App.currentModel = Article;
-
-    App.loadDataFromService(Article);
-
-    App.buildCollectionView(Article);
+        hideOverlay();
+    }, 1);
 };
 
 App.showBooks = function () {

@@ -2,8 +2,10 @@
 
 var Article = {};
 Article.id = 'http://schema.org/Article';
-Article.mapped = false;
-Article.collectionUrl = '';
+Article.collectionButtonSelector = '';
+
+Article.mapped = false;  // autowired
+Article.collectionUrl = '';  // autowired
 
 Article.properties = [
     'http://schema.org/headline',

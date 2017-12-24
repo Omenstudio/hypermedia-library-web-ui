@@ -1,1 +1,6 @@
 
+# gulp
+/gulp/node_modules
+
+# idea
+.idea

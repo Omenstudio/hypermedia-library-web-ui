@@ -32,7 +32,17 @@ App.initialize = function () {
         if (url.indexOf('http') !== 0) {
             url = 'http://' + url;
         }
-        Service.load(url);
+
+        // Load whole data
+        showOverlay();
+        // We need to make async call
+        setTimeout(function () {
+            DataProcessor.load(url);
+            renderPageAfterServiceLoaded();
+            hideOverlay();
+        }, 1);
+
+
         return false;
     });
 
@@ -44,15 +54,16 @@ App.initialize = function () {
 
 
 App.showArticles = function () {
-    showOverlay();
-    // We need to make async call
-    setTimeout(function () {
-        App.currentModel = Article;
-        App.loadDataFromService(Article);
-        App.buildCollectionView(Article);
-
-        hideOverlay();
-    }, 1);
+    renderCollectionForModel(Article);
+    // showOverlay();
+    // // We need to make async call
+    // setTimeout(function () {
+    //     App.currentModel = Article;
+    //     App.loadDataFromService(Article);
+    //     App.buildCollectionView(Article);
+    //
+    //     hideOverlay();
+    // }, 1);
 };
 
 App.showBooks = function () {
@@ -67,6 +78,10 @@ App.showPublishers = function () {
     $('.service-item-list').text('showPublishers');
 };
 
+
+App.showForModel = function () {
+
+};
 
 App.loadDataFromService = function (obj) {
     App.currentObjects = [];
@@ -115,13 +130,7 @@ App.showElement = function (index) {
 };
 
 
-function showOverlay() {
-    $('#overlay').css('display', 'grid');
-}
 
-function hideOverlay() {
-    $('#overlay').css('display', 'none');
-}
 
 $(document).ready(function () {
     hideOverlay();

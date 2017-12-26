@@ -3,7 +3,7 @@ var App = {};
 App.doc = '';
 
 
-App.connectToService = function(service_url) {
+App.connectToService = function (service_url) {
     // Enable visual styles
     showOverlay();
     $('#first-screen').css('display', 'none');
@@ -12,29 +12,75 @@ App.connectToService = function(service_url) {
     // We need to make async call not to freeze the screen
     setTimeout(function () {
         // first of all - parse entrypoint
-        var foundCollections = DataProcessor.load(service_url);
-        // Next - buttons
-        // renderServicePage();
+        var foundCollections = ServiceConnector.loadEntryPointAndDoc(service_url);
+        for (var i in foundCollections) {
+            Models[foundCollections[i].itemId].collectionUrl = foundCollections[i].url;
+        }
+
+        // Link to buttons
+        Renderer.updateMenu(foundCollections);
+
+        // Update list and item areas
+        Renderer.resetContentAreas();
+
+        // Update
         $('#service-screen').css('display', 'block');
+
+        // End
         hideOverlay();
     }, 1);
 
 
     // Info about current service
     $('#current-service-url-info').text(service_url);
-
-
-    console.log(service_url);
 };
 
 
+App.showCollectionForModel = function (model) {
+    showOverlay();
+
+    // Get data from server
+    // We need to make async call not to freeze the screen
+    setTimeout(function () {
+        // first of all - parse entrypoint
+        var collectionItems = ServiceConnector.loadCollection(model.collectionUrl, model.collectionParserCallback);
+
+        // Update list and item areas
+        Renderer.renderCollection(collectionItems, model);
+
+        $('.service-item-list li a').click(function (e) {
+            e.preventDefault();
+            App.showItemForModel($(this).attr('href'), model);
+        });
+
+        // End
+        hideOverlay();
+    }, 1);
+
+};
 
 
+App.showItemForModel = function(itemUrl, model) {
+    showOverlay();
 
+    // Get data from server
+    // We need to make async call not to freeze the screen
+    setTimeout(function () {
+        // first of all - parse EntryPoint
+        var item = ServiceConnector.loadItem(itemUrl, model.collectionParserCallback);
 
+        // Update list and item areas
+        Renderer.renderItem(item, model);
 
+        // $('.service-item-list li a').click(function (e) {
+        //     e.preventDefault();
+        //     App.showItemForModel($(this).attr('href'), model);
+        // });
 
-
+        // End
+        hideOverlay();
+    }, 1);
+};
 
 
 
@@ -84,10 +130,15 @@ App.initialize = function () {
         return false;
     });
 
-    // Button group visual switching
+    // Button group switching
     $('.control-buttons .btn').click(function () {
         $('.control-buttons .btn').removeClass('btn-primary');
         $(this).addClass('btn-primary');
+        for (var i in Models) {
+            if ($(this).is(Models[i].collectionButtonSelector)) {
+                App.showCollectionForModel(Models[i]);
+            }
+        }
     });
 
     // Links on first screen
@@ -141,20 +192,19 @@ App.loadDataFromService = function (obj) {
 };
 
 
-App.buildCollectionView = function(obj) {
+App.buildCollectionView = function (obj) {
     // Build html
     var listHtml = '<ul>';
 
-    for(var i=0, cur = App.currentObjects[i]; i < App.currentObjects.length; ++i, cur = App.currentObjects[i]) {
+    for (var i = 0, cur = App.currentObjects[i]; i < App.currentObjects.length; ++i, cur = App.currentObjects[i]) {
         var itemHtml =
             '<li>' +
-                '<a href="javascript:App.showElement(' + i + ')">' +
-                    cur['title'].__value.__value['@value'] +
-                '</a>' +
+            '<a href="javascript:App.showElement(' + i + ')">' +
+            cur['title'].__value.__value['@value'] +
+            '</a>' +
             '</li>';
         listHtml += itemHtml;
     }
-
 
 
     listHtml += '</ul>';
@@ -175,8 +225,6 @@ App.showElement = function (index) {
     html += '</ul>';
     $('.service-item-content').html(html);
 };
-
-
 
 
 $(document).ready(function () {

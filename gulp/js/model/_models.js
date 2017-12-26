@@ -1,16 +1,7 @@
-var Models = [
-    Article,
-    Book,
-    Author,
-    Publisher
-];
+var Models = {
+    'http://schema.org/Article': Article,
+    'http://schema.org/Person': Author,
+    'http://schema.org/Book': Book,
+    'http://schema.org/Publisher': Publisher
+};
 
-
-function getModelPos(modelToFind) {
-    for (var i=0, model = Models[i]; i<Models.length; ++i, model = Models[i]) {
-        if (model == modelToFind) {
-            return i;
-        }
-    }
-    return -1;
-}

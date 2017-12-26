@@ -30,7 +30,7 @@ gulp.task('browser-sync', function() {
 		//server: {
 		//	baseDir: '../'
 		//},
-		proxy: 'hydraui.dev',
+		proxy: 'hydraui',
 		notify: false,
 		// tunnel: true,
 		// tunnel: "projectmane", //Demonstration page: http://projectmane.localtunnel.me

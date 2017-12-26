@@ -1,5 +1,7 @@
 
 .service-item-list
+  border: 1px solid #d4d4d4
+  +border-radius(15px 0 0 0)
 
   ul
     list-style-type: none
@@ -10,9 +12,9 @@
     a
       display: block
       cursor: pointer
-      border: 1px solid #d4d4d4
+      border-bottom: 1px solid #d4d4d4
+      border-right: 10px solid transparent
       padding: 15px
-      padding-right: 10px
       text-decoration: none
       color: #000
       background-color: #f9f9f9
@@ -26,16 +28,11 @@
     &.active a, a:hover
       border-right: 10px solid #ffe015
       background-color: #f4f4f4
-      padding-right: 0
 
     a:active
       border-right: 10px solid #ffe015
       background-color: #f1f1f1
       cursor: text
-      padding-right: 0
-
-  li:not(:first-child) a
-    border-top: none
 
   li:first-child a
     +border-radius(15px 0 0 0)

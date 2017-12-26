@@ -15,12 +15,12 @@ Article.shortProperties = [
 ];
 
 
-Article.__shortViewTemplate = _.template(
+Article.__shortTemplate = _.template(
     "<li><a href=\"javascript:App.showElement(0)\">" +
-        "<table>" +
-            "<tr><th>Title:</th><td><%= title %></td></tr>" +
-            "<tr><th>Authors:</th><td><%= authors %></td></tr>" +
-        "</table>" +
+    "<table>" +
+    "<tr><th>Title:</th><td><%= title %></td></tr>" +
+    "<tr><th>Authors:</th><td><%= authors %></td></tr>" +
+    "</table>" +
     "</a></li>"
 );
 
@@ -28,7 +28,7 @@ Article.renderShortView = function (index, obj) {
     var authorsStr = 'authors';
 
 
-    return Article.__shortViewTemplate({
+    return Article.__shortTemplate({
         title: obj['title'].__value.__value['@value'],
         authors: authorsStr
     });

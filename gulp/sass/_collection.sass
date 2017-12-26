@@ -10,12 +10,12 @@
     a
       display: block
       cursor: pointer
-      border: 1px solid black
+      border: 1px solid #d4d4d4
       padding: 15px
+      padding-right: 10px
       text-decoration: none
       color: #000
-      &:hover
-        background-color: #f6f6f6
+      background-color: #f9f9f9
 
       th
         vertical-align: top
@@ -23,10 +23,19 @@
         color: #949494
         text-align: right
 
-    &.active a
-      background-color: #c8d1f6
+    &.active a, a:hover
+      border-right: 10px solid #ffe015
+      background-color: #f4f4f4
+      padding-right: 0
+
+    a:active
+      border-right: 10px solid #ffe015
+      background-color: #f1f1f1
       cursor: text
+      padding-right: 0
 
   li:not(:first-child) a
     border-top: none
 
+  li:first-child a
+    +border-radius(15px 0 0 0)

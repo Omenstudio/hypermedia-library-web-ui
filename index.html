@@ -28,61 +28,51 @@
 </div>
 
 <div class="wrapper">
-    <h1>Library WEB UI</h1>
-
-    <div id="first-screen">
-        <div class="fs-wrapper">
-            <br>
-            <div>
-                <div>
-
-                    <div class="navbar">
-                        <div class="navbar-inner">
-                            <div class="row-fluid">
-                                <div class="span12">
-                                    <form class="addressbar navbar-form form-inline">
-                                        <label>Enter an EntryPoint URL:</label>
-                                        <div class="input-append">
-                                            <input type="text" class="url input-xxlarge" placeholder="http://">
-                                            <button id="load" class="btn btn-inverse" data-loading-text="Loading...">
-                                                <i class="icon-refresh icon-white"></i> Load service
-                                            </button>
-                                        </div>
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div>
-                        To get started, enter the URL of the API EntryPoint in the address bar above and click
-                        on &quot;Load&quot;. You can use these APIs:
-                        <ul>
-                            <li>Library (books) Web API:
-                                <a href="javascript:Service.load('https://library-service-books.herokuapp.com/api/');"
-                                   data-action="GET">https://library-service-books.herokuapp.com/api/</a>
-                            </li>
-                            <li>Library (articles) Web API:
-                                <a href="javascript:Service.load('https://library-service-articles.herokuapp.com/api/');"
-                                   data-action="GET">
-                                    https://library-service-articles.herokuapp.com/api/
-                                </a>
-                            </li>
-                            <li>Locally runned service:
-                                <a href="javascript:Service.load('http://127.0.0.1:8080/api/');"
-                                   data-action="GET">
-                                    http://127.0.0.1:8080/api/
-                                </a>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </div>
-
+    <div class="title-block">
+        <h1>Library WEB UI</h1>
+        <div><b>Current service URL:</b><span id="current-service-url-info">none</span></div>
     </div>
 
-    <div id="main-content">
+    <div id="first-screen">
+        <div class="first-screen-wrapper">
+            <div class="navbar">
+                <div class="navbar-inner">
+                    <form class="addressbar navbar-form form-inline">
+                        <label>Enter an EntryPoint URL:</label>
+                        <div class="input-append">
+                            <input type="text" class="url input-xxlarge" placeholder="http://">
+                            <button id="load" class="btn btn-inverse" data-loading-text="Loading...">
+                                <i class="icon-refresh icon-white"></i> Load service
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div>
+                To get started, enter the URL of the API EntryPoint in the address bar above and click
+                on &quot;Load&quot;. You can use these APIs:
+                <ul>
+                    <li>Library (books) Web API:
+                        <a href="https://library-service-books.herokuapp.com/api/" data-action="GET">
+                            https://library-service-books.herokuapp.com/api/
+                        </a>
+                    </li>
+                    <li>Library (articles) Web API:
+                        <a href="https://library-service-articles.herokuapp.com/api/" data-action="GET">
+                            https://library-service-articles.herokuapp.com/api/
+                        </a>
+                    </li>
+                    <li>Locally runned service:
+                        <a href="http://127.0.0.1:8080/mega-api/" data-action="GET">
+                            http://127.0.0.1:8080/mega-api/
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div id="service-screen">
 
         <div class="control-buttons js-entities-menu">
             <div class="btn-group" role="group" aria-label="Control buttons">
@@ -100,17 +90,23 @@
 
                 <div class="article-collection">
 
-                    <div class="control-buttons">
-                        <button class="btn btn-info" onclick="App.addArticle()">Add new Article</button>
-                    </div>
+                    <!--<div class="control-buttons">-->
+                        <!--<button class="btn btn-info" onclick="App.addArticle()">Add new Article</button>-->
+                    <!--</div>-->
 
 
                     <ul>
                         <li>
                             <a href="javascript:App.showElement(0)">
                                 <table>
-                                    <tr><th>Title:</th><td>Play and learning in early childhood education in Sweden</td></tr>
-                                    <tr><th>Authors:</th><td>Vasily Rutin</td></tr>
+                                    <tr>
+                                        <th>Title:</th>
+                                        <td>Play and learning in early childhood education in Sweden</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Authors:</th>
+                                        <td>Vasily Rutin</td>
+                                    </tr>
                                     <tr></tr>
                                     <tr></tr>
                                 </table>

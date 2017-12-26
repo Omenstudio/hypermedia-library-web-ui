@@ -1,7 +1,53 @@
 var App = {};
 
-App.currentObjects = [];
-App.currentModel = null;
+App.doc = '';
+
+
+App.connectToService = function(service_url) {
+    // Enable visual styles
+    showOverlay();
+    $('#first-screen').css('display', 'none');
+
+    // Get data from server
+    // We need to make async call not to freeze the screen
+    setTimeout(function () {
+        // first of all - parse entrypoint
+        var foundCollections = DataProcessor.load(service_url);
+        // Next - buttons
+        // renderServicePage();
+        $('#service-screen').css('display', 'block');
+        hideOverlay();
+    }, 1);
+
+
+    // Info about current service
+    $('#current-service-url-info').text(service_url);
+
+
+    console.log(service_url);
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 App.initialize = function () {
     // Inject to page
@@ -19,7 +65,7 @@ App.initialize = function () {
         $('.addressbar .url').val(queryParams.url);
     }
 
-    // Listeners
+    // "Load service" button
     $('.addressbar').submit(function (e) {
         e.preventDefault();
 
@@ -33,23 +79,24 @@ App.initialize = function () {
             url = 'http://' + url;
         }
 
-        // Load whole data
-        showOverlay();
-        // We need to make async call
-        setTimeout(function () {
-            DataProcessor.load(url);
-            renderPageAfterServiceLoaded();
-            hideOverlay();
-        }, 1);
-
+        App.connectToService(url);
 
         return false;
     });
 
+    // Button group visual switching
     $('.control-buttons .btn').click(function () {
         $('.control-buttons .btn').removeClass('btn-primary');
         $(this).addClass('btn-primary');
     });
+
+    // Links on first screen
+    $('.first-screen-wrapper a').click(function (e) {
+        e.preventDefault();
+        App.connectToService($(this).attr('href'));
+    });
+
+    $('#service-screen').css('display', 'none');
 };
 
 

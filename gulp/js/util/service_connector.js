@@ -6,7 +6,6 @@ var DataProcessor = {};
 DataProcessor.currentEntryPoint = '';
 DataProcessor.currentDoc = '';
 
-DataProcessor.objects = [];
 
 
 /**
@@ -52,14 +51,14 @@ DataProcessor.load = function (url) {
 
         // Parse entrypoint to link collections and urls
         DataProcessor._parseEntryPoint(resource);
-
-        // We need to figure out, which model's fields supported
-        // by the server and which are not
-        DataProcessor._parseInfoAboutModels();
-
-        // Load all dataset in memory.
-        // Stupid solution, but I guess that's not important in my case
-        DataProcessor._loadAllData();
+        //
+        // // We need to figure out, which model's fields supported
+        // // by the server and which are not
+        // DataProcessor._parseInfoAboutModels();
+        //
+        // // Load all dataset in memory.
+        // // Stupid solution, but I guess that's not important in my case
+        // DataProcessor._loadAllData();
     });
 };
 

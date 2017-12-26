@@ -1,0 +1,45 @@
+//@import "bourbon"
+
+$default-font: "arial", sans-serif
+
+=tborder
+  border: 1px solid yellow
+
+=border-radius($radius)
+  -webkit-border-radius: $radius
+  -moz-border-radius:    $radius
+  -ms-border-radius:     $radius
+  -khtml-border-radius:  $radius
+  border-radius:         $radius
+
+@mixin box-shadow($top, $left, $blur, $color, $inset: false)
+  @if $inset
+    -webkit-box-shadow: inset $top $left $blur $color
+    -moz-box-shadow: inset $top $left $blur $color
+    box-shadow: inset $top $left $blur $color
+  @else
+    -webkit-box-shadow: $top $left $blur $color
+    -moz-box-shadow: $top $left $blur $color
+    box-shadow: $top $left $blur $color
+
+@mixin box-shadow-none
+  -webkit-box-shadow: none
+  -moz-box-shadow: none
+  box-shadow: none
+
+@mixin bg-gradient-l2r($start-colour, $end-colour)
+  background-color: $start-colour
+  background: -webkit-gradient(linear, left top, right top, from($start-colour), to($end-colour))
+  background: -webkit-linear-gradient(left, $start-colour, $end-colour)
+  background:    -moz-linear-gradient(left, $start-colour, $end-colour)
+  background:     -ms-linear-gradient(left, $start-colour, $end-colour)
+  background:      -o-linear-gradient(left, $start-colour, $end-colour)
+  background:         linear-gradient(to right, $start-colour, $end-colour)
+  filter:            progid:DXImageTransform.Microsoft.gradient(start-colourStr='#{$start-colour}', end-colourStr='#{$end-colour}')
+
+@mixin flexbox
+  display: -webkit-box
+  display: -webkit-flex
+  display: -moz-flex
+  display: -ms-flexbox
+  display: flex

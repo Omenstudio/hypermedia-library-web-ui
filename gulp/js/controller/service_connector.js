@@ -57,7 +57,7 @@ ServiceConnector._parseEntryPoint = function (resource) {
 };
 
 
-ServiceConnector.loadCollection = function (collectionUrl, callbackFunc) {
+ServiceConnector.loadCollection = function (model, collectionUrl) {
     var items = [];
 
     // Suppose, that links to collections located in EntryPoint
@@ -69,7 +69,7 @@ ServiceConnector.loadCollection = function (collectionUrl, callbackFunc) {
         var membersArray = resource.members.__value;
 
         for (var elemId in membersArray) {
-            items.push(callbackFunc(membersArray[elemId]));
+            items.push(ServiceConnector.parseResponseAsModelObject(model, membersArray[elemId]));
             // break;
         }
     });
@@ -78,7 +78,7 @@ ServiceConnector.loadCollection = function (collectionUrl, callbackFunc) {
 };
 
 
-ServiceConnector.loadItem = function (itemUrl, callbackFunc) {
+ServiceConnector.loadItem = function (model, itemUrl) {
     var res = {};
 
     // Suppose, that links to collections located in EntryPoint
@@ -87,8 +87,57 @@ ServiceConnector.loadItem = function (itemUrl, callbackFunc) {
     invokeRequest("GET", itemUrl).done(function (resource, textStatus, jqXHR) {
         // From proxy.php we get JSON response, which is already converted from JSON-LD to usual json
         resource = JSON.parse(resource);
-        res = callbackFunc(resource);
+        res = ServiceConnector.parseResponseAsModelObject(model, resource);
     });
 
     return res;
+};
+
+
+ServiceConnector.parseResponseAsModelObject = function (model, jsonItem) {
+    var answer = {};
+
+    answer.url = jsonItem['@id'].__value.__value['@id'];
+    answer.type = jsonItem['@type'].__value.__value['@id'];
+
+    var vocabDefinedProperties = ServiceConnector.vocab[answer.type].supportedProperties;
+
+    // console.log(vocabDefinedProperties);
+
+    for (var propTitle in jsonItem) {
+        if (propTitle[0] === '@') {
+            continue;
+        }
+
+        var prop = jsonItem[propTitle];
+
+        // Finding type of this property
+        var propType = '';
+        for (var vocabPropId in vocabDefinedProperties) {
+            var vocabProp = vocabDefinedProperties[vocabPropId];
+            if (vocabProp['hydra_title'] === propTitle) {
+                propType = vocabProp['property'];
+                break;
+            }
+        }
+
+
+        // May be is it collection ?
+        if (propType === '' || typeof model.propertiesMap[propType] === 'undefined') {
+            // TODO add handler
+            continue;
+        }
+
+
+        var propKey = model.propertiesMap[propType];
+        var propValue = prop.__value;
+        if (typeof propValue.__value !== 'undefined' && typeof propValue.__value['@value'] !== 'undefined') {
+            propValue = propValue.__value['@value'];
+        }
+
+        answer[propKey] = propValue;
+    }
+
+
+    return answer;
 };

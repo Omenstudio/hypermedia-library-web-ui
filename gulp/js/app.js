@@ -43,10 +43,12 @@ App.showCollectionForModel = function (model) {
     // We need to make async call not to freeze the screen
     setTimeout(function () {
         // first of all - parse entrypoint
-        var collectionItems = ServiceConnector.loadCollection(model.collectionUrl, model.collectionParserCallback);
+        var collectionItems = ServiceConnector.loadCollection(model, model.collectionUrl);
 
         // Update list and item areas
         Renderer.renderCollection(collectionItems, model);
+
+        Renderer.resetItemArea();
 
         $('.service-item-list li a').click(function (e) {
             e.preventDefault();
@@ -67,7 +69,7 @@ App.showItemForModel = function(itemUrl, model) {
     // We need to make async call not to freeze the screen
     setTimeout(function () {
         // first of all - parse EntryPoint
-        var item = ServiceConnector.loadItem(itemUrl, model.collectionParserCallback);
+        var item = ServiceConnector.loadItem(model, itemUrl);
 
         // Update list and item areas
         Renderer.renderItem(item, model);

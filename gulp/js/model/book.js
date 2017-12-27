@@ -38,24 +38,17 @@ Book.renderView = function (obj) {
 
     res += '<table>';
 
-    //     'http://schema.org/Person': 'authors',
-    //     'http://schema.org/Book': 'magazine'
+
+    res += Renderer.renderProperty('Alt. title:', obj['alternativeHeadline']);
     res += Renderer.renderProperty('Description:', obj['description']);
+    res += Renderer.renderProperty('Publish year:', obj['copyrightYear']);
+    res += Renderer.renderProperty('Page count:', obj['numberOfPages']);
+    res += Renderer.renderProperty('Edition:', obj['bookEdition']);
+    res += Renderer.renderProperty('ISBN:', obj['isbn']);
 
-    var pages = '';
-    if (typeof obj['start page'] !== 'undefined') {
-        pages += obj['start page']
-    }
-    if (typeof obj['end page'] !== 'undefined') {
-        pages += obj['end page']
-    }
-    res += Renderer.renderProperty('Pages:', pages);
-    res += Renderer.renderProperty('Number of words:', obj['number of words']);
+    res += Renderer.renderProperty('Person:', obj['Person']);
+    res += Renderer.renderProperty('Publisher:', obj['Publisher']);
 
-    res += '</table>';
-
-
-
-    res += '</div>';
+    res += '</table></div>';
     return res;
 };

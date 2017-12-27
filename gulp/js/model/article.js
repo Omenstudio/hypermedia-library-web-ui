@@ -99,7 +99,7 @@ Article.renderView = function (obj) {
         pages += obj['start page']
     }
     if (typeof obj['end page'] !== 'undefined') {
-        pages += obj['end page']
+        pages += '-'+obj['end page']
     }
     res += Renderer.renderProperty('Pages:', pages);
     res += Renderer.renderProperty('Number of words:', obj['number of words']);

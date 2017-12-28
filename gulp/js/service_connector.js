@@ -66,11 +66,13 @@ ServiceConnector.loadCollection = function (model, collectionUrl) {
     invokeRequest("GET", collectionUrl).done(function (resource, textStatus, jqXHR) {
         // From proxy.php we get JSON response, which is already converted from JSON-LD to usual json
         resource = JSON.parse(resource);
-        var membersArray = resource.members.__value;
 
-        for (var elemId in membersArray) {
-            items.push(ServiceConnector.parseResponseAsModelObject(model, membersArray[elemId]));
-            // break;
+        if (resource !== null) {
+            var membersArray = resource.members.__value;
+
+            for (var elemId in membersArray) {
+                items.push(ServiceConnector.parseResponseAsModelObject(model, membersArray[elemId]));
+            }
         }
     });
 
@@ -196,6 +198,7 @@ ServiceConnector.isModelSupportOperation = function(model, operation) {
 
     return false;
 };
+
 
 ServiceConnector.removeItem = function(url) {
     return invokeRequest('DELETE', url);

@@ -34,10 +34,17 @@ Renderer.resetItemArea = function () {
 Renderer.renderCollection = function (collection, model) {
     var res = '<ul>';
 
-    for (var i in collection) {
-        var item = collection[i];
-        res += model.renderShortView(item);
+    if (collection.length !== 0) {
+        for (var i in collection) {
+            var item = collection[i];
+            res += model.renderShortView(item);
+        }
     }
+    else {
+        res += '<p class="tip">There are no ' + model.simpleName + 's on the service</p>';
+    }
+
+
 
     res += '</ul>';
 
@@ -63,9 +70,67 @@ Renderer.renderItem = function (item, model) {
 };
 
 
+Renderer.renderItemChange = function(model, item) {
+    // Title
+    var action = 'Edit';
+    if (typeof item === 'undefined') {
+        action = 'Save';
+    }
+    var title = '<h2>' + action + ' ' + model.simpleName + '</h2>';
+
+
+    // Form
+    var formData = '<form id="save-form">';
+
+    var properties = ServiceConnector.vocab[model.id].supportedProperties;
+    for (var i in properties) {
+        formData += Renderer.renderPropertyInput(properties[i], model, item);
+    }
+
+    formData += '</form>';
+
+
+    // Save and Cancel buttons
+    var saveUrl = model.collectionUrl;
+    if (typeof item !== 'undefined') {
+        saveUrl  = item.url;
+    }
+    var cancelUrl = model.collectionUrl;
+    if (typeof item !== 'undefined') {
+        cancelUrl  = item.url;
+    }
+    var buttons = '<div class="item-control-buttons">' +
+                        '<button class="btn btn-success btn-save href="' + saveUrl + '">Save</button>' +
+                        '<button class="btn btn-danger btn-cancel" href="' + cancelUrl + '">Cancel</button>' +
+                    '</div>';
+
+
+    // Build
+    $('.service-item-content').html('<div class="item-wrapper">' + title + formData + buttons + '</div>');
+};
+
+
+
 Renderer.renderProperty = function (title, prop) {
     if (typeof prop !== 'undefined') {
         return '<tr><th>' + title + '</th><td>' + prop + '</td></tr>';
     }
     return '';
+};
+
+
+Renderer.renderPropertyInput = function (propertyObject, model, item) {
+    var modelPropertyName = model.propertiesMap[propertyObject.property];
+
+    var value = item[modelPropertyName];
+    if (typeof value === 'undefined') {
+        value = '';
+    }
+
+    return '<div class="form-row">' +
+               '<label>' + propertyObject.hydra_description + '</label>' +
+               '<input name="' + propertyObject.hydra_title + '" ' +
+                       'placeholder="' + modelPropertyName + '" ' +
+                       'value="' + value + '" />' +
+           '</div>';
 };

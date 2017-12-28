@@ -132,14 +132,31 @@ App.showItemForModel = function (itemUrl, model) {
             App.showItemForModel(itemUrl, model);
         });
 
-        // Bind buttons (Remove and Delete)
+        // Bind Edit button
+        $('.btn-edit').click(function () {
+            Renderer.renderItemChange(model, item);
+
+            $('.btn-cancel').click(function () {
+                App.showItemForModel(item.url, model);
+            });
+
+            $('.btn-save').click(function () {
+
+
+
+                App.showItemForModel(item.url, model);
+            });
+
+
+
+
+        });
+
+        // Bind Remove button
         $('.btn-remove').click(function () {
             ServiceConnector.removeItem($(this).attr('href'));
             App.showCollectionForModel(model);
         });
-
-
-
 
 
         // End
@@ -149,6 +166,15 @@ App.showItemForModel = function (itemUrl, model) {
     // Get data from server
     // We need to make async call not to freeze the screen
     setTimeout(doit, 1);
+};
+
+
+App.editItemForModel = function (itemUrl, model) {
+    //
+
+
+
+
 };
 
 

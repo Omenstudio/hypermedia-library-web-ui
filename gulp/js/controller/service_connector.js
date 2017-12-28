@@ -19,7 +19,7 @@ ServiceConnector.loadEntryPointAndDoc = function (entryPointUrl) {
         resource = JSON.parse(resource);
 
         // Parse entrypoint to link collections and urls
-        foundCollections =  ServiceConnector._parseEntryPoint(resource);
+        foundCollections = ServiceConnector._parseEntryPoint(resource);
     });
 
     return foundCollections;
@@ -37,7 +37,7 @@ ServiceConnector._parseEntryPoint = function (resource) {
     // detect which type of Entity they contain
     var foundCollections = [];
 
-    for(var entryPointItemKey in resource) {
+    for (var entryPointItemKey in resource) {
         // skip if this is not regular field
         if (entryPointItemKey[0] === '@') {
             continue;
@@ -97,8 +97,8 @@ ServiceConnector.loadItem = function (model, itemUrl) {
 ServiceConnector.parseResponseAsModelObject = function (model, jsonItem) {
     var answer = {};
 
-    answer.url = jsonItem['@id'].__value.__value['@id'];
-    answer.type = jsonItem['@type'].__value.__value['@id'];
+    answer.url = ServiceConnector.parseToId(jsonItem['@id']);
+    answer.type = ServiceConnector.parseToId(jsonItem['@type']);
 
     var vocabDefinedProperties = ServiceConnector.vocab[answer.type].supportedProperties;
 
@@ -122,17 +122,38 @@ ServiceConnector.parseResponseAsModelObject = function (model, jsonItem) {
         }
 
 
-        // May be is it collection ?
+        // May be it is a collection ?
+        var currentFieldArray = [];
         if (propType === '' || typeof model.propertiesMap[propType] === 'undefined') {
-            // TODO add handler
-            continue;
+            var potentialCollection = prop.__value;
+            if (typeof potentialCollection !== 'undefined' && $.isArray(potentialCollection)) {
+                // parse all objects
+                for (var i in potentialCollection) {
+                    if (currentFieldArray.length === 0) {
+                        propType = ServiceConnector.parseToId(potentialCollection[i]['@type']);
+                    }
+
+                    currentFieldArray.push(ServiceConnector.parseResponseAsModelObject(findModelById(propType), potentialCollection[i]));
+                }
+            }
+            else {
+                continue;
+            }
         }
 
 
         var propKey = model.propertiesMap[propType];
-        var propValue = prop.__value;
-        if (typeof propValue.__value !== 'undefined' && typeof propValue.__value['@value'] !== 'undefined') {
-            propValue = propValue.__value['@value'];
+        var propValue = '';
+        try {
+            if (currentFieldArray.length > 0) {
+                propValue = currentFieldArray
+            }
+            else {
+                propValue = ServiceConnector.parseToValue(prop);
+            }
+        }
+        catch (err) {
+            propValue = ServiceConnector.parseResponseAsModelObject(model, prop.__value);
         }
 
         answer[propKey] = propValue;
@@ -140,4 +161,28 @@ ServiceConnector.parseResponseAsModelObject = function (model, jsonItem) {
 
 
     return answer;
+};
+
+
+ServiceConnector.parseToId = function (jsonItem) {
+    while (typeof jsonItem !== 'string') {
+        jsonItem = jsonItem.__value;
+        if (typeof jsonItem['@id'] !== 'undefined') {
+            jsonItem = jsonItem['@id'];
+            break;
+        }
+    }
+    return jsonItem;
+};
+
+ServiceConnector.parseToValue = function (jsonItem) {
+    console.log(jsonItem);
+    while (typeof jsonItem === 'object') {
+        jsonItem = jsonItem.__value;
+        if (typeof jsonItem['@value'] !== 'undefined') {
+            jsonItem = jsonItem['@value'];
+            break;
+        }
+    }
+    return jsonItem;
 };

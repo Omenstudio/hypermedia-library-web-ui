@@ -28,6 +28,32 @@ App.connectToService = function (service_url) {
 
         // End
         hideOverlay();
+
+
+        // Scroll then fix feature
+        var fixmeTop = $('.fixme').offset().top;
+        var fixmeLeft = $('.fixme').offset().left-8;
+        var fixmeWidth = $('.fixme').width();
+
+        $(window).scroll(function() {                  // assign scroll event listener
+            var currentScroll = $(window).scrollTop(); // get current position
+            if (currentScroll >= fixmeTop) {           // apply position: fixed if you
+                $('.fixme').css({                      // scroll to that element or below it
+                    position: 'fixed',
+                    top: '0',
+                    left: fixmeLeft,
+                    width: fixmeWidth,
+                    height: screen.height
+                });
+            } else {                                   // apply position: static
+                $('.fixme').css({                      // if you scroll above it
+                    position: 'static',
+                    height: 'auto'
+                });
+            }
+
+        });
+
     }, 1);
 
 

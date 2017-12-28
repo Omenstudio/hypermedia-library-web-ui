@@ -13,70 +13,25 @@ Article.propertiesMap = {
     'http://schema.org/Book': 'magazine'
 };
 
-// Need to transform json-ld response to normal model
-Article.collectionParserCallback = function (jsonItem) {
-    var answer = {};
 
-    answer.url = jsonItem['@id'].__value.__value['@id'];
-    answer.type = jsonItem['@type'].__value.__value['@id'];
+Article.renderShortView = function (curArticle) {
+    var res = '<li><a href="'+curArticle.url+'">';
 
-    var vocabDefinedProperties = ServiceConnector.vocab[answer.type].supportedProperties;
-
-    // console.log(vocabDefinedProperties);
-
-    for (var propTitle in jsonItem) {
-        if (propTitle[0] === '@') {
-            continue;
-        }
-
-        var prop = jsonItem[propTitle];
-
-        // Finding type of this property
-        var propType = '';
-        for (var vocabPropId in vocabDefinedProperties) {
-            var vocabProp = vocabDefinedProperties[vocabPropId];
-            if (vocabProp['hydra_title'] === propTitle) {
-                propType = vocabProp['property'];
-                break;
-            }
-        }
-
-
-        // May be is it collection ?
-        if (propType === '' || typeof Article.propertiesMap[propType] === 'undefined') {
-            // TODO add handler
-            continue;
-        }
-
-
-        var propKey = Article.propertiesMap[propType];
-        var propValue = prop.__value;
-        if (typeof propValue.__value !== 'undefined' && typeof propValue.__value['@value'] !== 'undefined') {
-            propValue = propValue.__value['@value'];
-        }
-
-        answer[propKey] = propValue;
+    if (typeof curArticle.title !== 'undefined') {
+        res += '<div class="short-article-title">' + curArticle.title + '</div>';
     }
 
+    if (typeof curArticle.authors !== 'undefined') {
+        var authors_list_str = '';
+        for (var i in curArticle.authors) {
+            authors_list_str += curArticle.authors[i].name + ', ';
+        }
+        authors_list_str = authors_list_str.substr(0, authors_list_str.length-2);
 
-    return answer;
-};
-
-
-
-
-
-
-Article.renderShortView = function (obj) {
-    var res = '<li><a href="'+obj.url+'"><table>';
-
-    res += Renderer.renderProperty('Title:', obj['title']);
-
-    if (typeof obj['authors'] !== 'undefined') {
-        res += '<tr><th>Title:</th><td>' + obj['authors'] + '</td></tr>';
+        res += '<div class="short-article-authors">' + authors_list_str + '</div>';
     }
 
-    res += '</table></a></li>';
+    res += '</a></li>';
     return res;
 };
 
@@ -84,16 +39,32 @@ Article.renderShortView = function (obj) {
 Article.renderView = function (obj) {
     var res = '<div class="item-wrapper">';
 
-    if (typeof obj['title'] !== 'undefined') {
-        res += '<h2>' + obj['title'] + '</h2>';
+    // Title
+    if (typeof obj.title !== 'undefined') {
+        res += '<h2>' + obj.title + '</h2>';
     }
 
     res += '<table>';
 
-    //     'http://schema.org/Person': 'authors',
-    //     'http://schema.org/Book': 'magazine'
+    // Authors
+    if (typeof obj.authors !== 'undefined') {
+        res += '<tr><th>Authors:</th><td>';
+        for (var i in obj.authors) {
+            var author = obj.authors[i];
+            res += '<li><a href="' + author.url + '" class="author-popup">' + author.name  + '</a></li>';
+        }
+        res += '</td></tr>';
+    }
+
+    // Magazine
+    if (typeof obj.magazine !== 'undefined') {
+        res += '<tr><th>Magazine:</th><td><a href="' + obj.magazine.url + '" class="book-popup">' + obj.magazine.title + '</a></td></tr>';
+    }
+
+    // Description
     res += Renderer.renderProperty('Description:', obj['description']);
 
+    // Pages
     var pages = '';
     if (typeof obj['start page'] !== 'undefined') {
         pages += obj['start page']
@@ -102,12 +73,15 @@ Article.renderView = function (obj) {
         pages += '-'+obj['end page']
     }
     res += Renderer.renderProperty('Pages:', pages);
+
+    // Number of words
     res += Renderer.renderProperty('Number of words:', obj['number of words']);
 
+
+
+
+
     res += '</table>';
-
-
-
     res += '</div>';
     return res;
 };

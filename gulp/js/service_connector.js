@@ -102,8 +102,6 @@ ServiceConnector.parseResponseAsModelObject = function (model, jsonItem) {
 
     var vocabDefinedProperties = ServiceConnector.vocab[answer.type].supportedProperties;
 
-    // console.log(vocabDefinedProperties);
-
     for (var propTitle in jsonItem) {
         if (propTitle[0] === '@') {
             continue;
@@ -141,7 +139,7 @@ ServiceConnector.parseResponseAsModelObject = function (model, jsonItem) {
             }
         }
 
-
+        // Forming key and value params
         var propKey = model.propertiesMap[propType];
         var propValue = '';
         try {
@@ -176,7 +174,6 @@ ServiceConnector.parseToId = function (jsonItem) {
 };
 
 ServiceConnector.parseToValue = function (jsonItem) {
-    console.log(jsonItem);
     while (typeof jsonItem === 'object') {
         jsonItem = jsonItem.__value;
         if (typeof jsonItem['@value'] !== 'undefined') {

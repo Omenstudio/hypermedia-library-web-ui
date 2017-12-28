@@ -51,14 +51,18 @@ Article.renderView = function (obj) {
         res += '<tr><th>Authors:</th><td>';
         for (var i in obj.authors) {
             var author = obj.authors[i];
-            res += '<li><a href="' + author.url + '" class="author-popup">' + author.name  + '</a></li>';
+            res += '<li><a href="' + author.url + '" class="popup" data-model-id="http://schema.org/Person">' +
+                    author.name  +
+                '</a></li>';
         }
         res += '</td></tr>';
     }
 
     // Magazine
     if (typeof obj.magazine !== 'undefined') {
-        res += '<tr><th>Magazine:</th><td><a href="' + obj.magazine.url + '" class="book-popup">' + obj.magazine.title + '</a></td></tr>';
+        res += '<tr><th>Magazine:</th><td><a href="' + obj.magazine.url + '" class="popup" data-model-id="http://schema.org/Book">' +
+                obj.magazine.title +
+            '</a></td></tr>';
     }
 
     // Description

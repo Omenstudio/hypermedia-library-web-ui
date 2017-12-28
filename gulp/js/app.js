@@ -32,10 +32,10 @@ App.connectToService = function (service_url) {
 
         // Scroll then fix feature
         var fixmeTop = $('.fixme').offset().top;
-        var fixmeLeft = $('.fixme').offset().left-8;
+        var fixmeLeft = $('.fixme').offset().left - 8;
         var fixmeWidth = $('.fixme').width();
 
-        $(window).scroll(function() {                  // assign scroll event listener
+        $(window).scroll(function () {                  // assign scroll event listener
             var currentScroll = $(window).scrollTop(); // get current position
             if (currentScroll >= fixmeTop) {           // apply position: fixed if you
                 $('.fixme').css({                      // scroll to that element or below it
@@ -62,12 +62,10 @@ App.connectToService = function (service_url) {
 };
 
 
-App.showCollectionForModel = function (model) {
+App.showCollectionForModel = function (model, sync) {
     showOverlay();
 
-    // Get data from server
-    // We need to make async call not to freeze the screen
-    setTimeout(function () {
+    var doit = function () {
         // first of all - parse entrypoint
         var collectionItems = ServiceConnector.loadCollection(model, model.collectionUrl);
 
@@ -83,44 +81,61 @@ App.showCollectionForModel = function (model) {
 
         // End
         hideOverlay();
-    }, 1);
+    };
 
+    if (typeof sync !== 'undefined') {
+        doit();
+    }
+    else {
+        // Get data from server
+        // We need to make async call not to freeze the screen
+        setTimeout(doit, 1);
+    }
 };
 
 
-App.showItemForModel = function(itemUrl, model) {
+App.showItemForModel = function (itemUrl, model) {
     showOverlay();
 
-    // Get data from server
-    // We need to make async call not to freeze the screen
-    setTimeout(function () {
+    var doit = function () {
         // first of all - parse EntryPoint
         var item = ServiceConnector.loadItem(model, itemUrl);
 
         // Update list and item areas
         Renderer.renderItem(item, model);
 
-        // $('.service-item-list li a').click(function (e) {
-        //     e.preventDefault();
-        //     App.showItemForModel($(this).attr('href'), model);
-        // });
+        // Bind links
+        $('.popup').click(function (e) {
+            e.preventDefault();
+
+            var model = Models[$(this).attr('data-model-id')];
+            var itemUrl = $(this).attr('href');
+
+            // Menu reset
+            $('.control-buttons .btn').removeClass('btn-primary');
+            $(model.collectionButtonSelector).addClass('btn-primary');
+
+            // Load list of authors
+            App.showCollectionForModel(model, true);
+            $('.service-item-list a').each(function () {
+                if ($(this).attr('href') === itemUrl) {
+                    $(this).parent().addClass('active');
+                    return 0;
+                }
+            });
+
+            // Load author
+            App.showItemForModel(itemUrl, model);
+        });
 
         // End
         hideOverlay();
-    }, 1);
+    };
+
+    // Get data from server
+    // We need to make async call not to freeze the screen
+    setTimeout(doit, 1);
 };
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 App.initialize = function () {
@@ -179,81 +194,13 @@ App.initialize = function () {
 };
 
 
-App.showArticles = function () {
-    renderCollectionForModel(Article);
-    // showOverlay();
-    // // We need to make async call
-    // setTimeout(function () {
-    //     App.currentModel = Article;
-    //     App.loadDataFromService(Article);
-    //     App.buildCollectionView(Article);
-    //
-    //     hideOverlay();
-    // }, 1);
-};
+function showOverlay() {
+    $('#overlay').css('display', 'grid');
+}
 
-App.showBooks = function () {
-    $('.service-item-list').text('Books');
-};
-
-App.showAuthors = function () {
-    $('.service-item-list').text('Authors');
-};
-
-App.showPublishers = function () {
-    $('.service-item-list').text('showPublishers');
-};
-
-
-App.showForModel = function () {
-
-};
-
-App.loadDataFromService = function (obj) {
-    App.currentObjects = [];
-
-    var collection = loadRegularUrl(obj.collectionUrl).members.__value;
-    for (var i in collection) {
-        var itemUrl = collection[i]['@id'].__value.__value['@id'];
-        App.currentObjects.push(loadRegularUrl(itemUrl));
-    }
-};
-
-
-App.buildCollectionView = function (obj) {
-    // Build html
-    var listHtml = '<ul>';
-
-    for (var i = 0, cur = App.currentObjects[i]; i < App.currentObjects.length; ++i, cur = App.currentObjects[i]) {
-        var itemHtml =
-            '<li>' +
-            '<a href="javascript:App.showElement(' + i + ')">' +
-            cur['title'].__value.__value['@value'] +
-            '</a>' +
-            '</li>';
-        listHtml += itemHtml;
-    }
-
-
-    listHtml += '</ul>';
-    $('.service-item-list').html(listHtml);
-};
-
-
-App.showElement = function (index) {
-    var html = '<ul>';
-
-    for (var i in App.currentObjects[index]) {
-        var prop = App.currentObjects[index][i];
-        var val = prop.__value.__orig_value;
-        var iri = prop.__iri;
-        html += '<li>' + val + '</li>';
-    }
-
-    html += '</ul>';
-    $('.service-item-content').html(html);
-};
-
+function hideOverlay() {
+    $('#overlay').css('display', 'none');
+}
 
 $(document).ready(function () {
     hideOverlay();

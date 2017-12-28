@@ -2,7 +2,7 @@ var Author = {};
 Author.id = 'http://schema.org/Person';
 Author.collectionUrl = '';  // autowired
 Author.collectionButtonSelector = '.js-authors-btn';
-
+Author.simpleName = 'Author';
 Author.propertiesMap = {
     'http://schema.org/name': 'name',
     'http://schema.org/birthDate': 'birthDate'
@@ -20,7 +20,7 @@ Author.renderShortView = function (obj) {
 
 
 Author.renderView = function (obj) {
-    var res = '<div class="item-wrapper">';
+    var res = '';
 
     if (typeof obj['name'] !== 'undefined') {
         res += '<h2>' + obj['name'] + '</h2>';
@@ -30,6 +30,5 @@ Author.renderView = function (obj) {
     res += Renderer.renderProperty('Date of birth:', obj['birthDate']);
     res += '</table>';
 
-    res += '</div>';
     return res;
 };

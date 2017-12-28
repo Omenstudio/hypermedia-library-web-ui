@@ -131,7 +131,7 @@ ServiceConnector.parseResponseAsModelObject = function (model, jsonItem) {
                         propType = ServiceConnector.parseToId(potentialCollection[i]['@type']);
                     }
 
-                    currentFieldArray.push(ServiceConnector.parseResponseAsModelObject(findModelById(propType), potentialCollection[i]));
+                    currentFieldArray.push(ServiceConnector.parseResponseAsModelObject(Models[propType], potentialCollection[i]));
                 }
             }
             else {
@@ -173,6 +173,7 @@ ServiceConnector.parseToId = function (jsonItem) {
     return jsonItem;
 };
 
+
 ServiceConnector.parseToValue = function (jsonItem) {
     while (typeof jsonItem === 'object') {
         jsonItem = jsonItem.__value;
@@ -182,4 +183,20 @@ ServiceConnector.parseToValue = function (jsonItem) {
         }
     }
     return jsonItem;
+};
+
+
+ServiceConnector.isModelSupportOperation = function(model, operation) {
+    var operations = ServiceConnector.vocab[model.id].supportedOperations;
+    for (var i in operations) {
+        if (operations[i].method.toLowerCase() === operation.toLowerCase()) {
+            return true;
+        }
+    }
+
+    return false;
+};
+
+ServiceConnector.removeItem = function(url) {
+    return invokeRequest('DELETE', url);
 };

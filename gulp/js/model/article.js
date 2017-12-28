@@ -2,7 +2,7 @@ var Article = {};
 Article.id = 'http://schema.org/Article';
 Article.collectionUrl = '';  // autowired
 Article.collectionButtonSelector = '.js-articles-btn';
-
+Article.simpleName = 'Article';
 Article.propertiesMap = {
     'http://schema.org/headline': 'title',
     'http://schema.org/description': 'description',
@@ -37,7 +37,7 @@ Article.renderShortView = function (curArticle) {
 
 
 Article.renderView = function (obj) {
-    var res = '<div class="item-wrapper">';
+    var res = '';
 
     // Title
     if (typeof obj.title !== 'undefined') {
@@ -81,12 +81,7 @@ Article.renderView = function (obj) {
     // Number of words
     res += Renderer.renderProperty('Number of words:', obj['number of words']);
 
-
-
-
-
     res += '</table>';
-    res += '</div>';
     return res;
 };
 

@@ -2,8 +2,7 @@ var Book = {};
 Book.id = 'http://schema.org/Book';
 Book.collectionUrl = '';  // autowired
 Book.collectionButtonSelector = '.js-books-btn';
-
-
+Book.simpleName = 'Book';
 Book.propertiesMap = {
     'http://schema.org/headline': 'title',
     'http://schema.org/alternativeHeadline': 'alternativeTitle',
@@ -30,7 +29,7 @@ Book.renderShortView = function (obj) {
 
 
 Book.renderView = function (obj) {
-    var res = '<div class="item-wrapper">';
+    var res = '';
 
     if (typeof obj['title'] !== 'undefined') {
         res += '<h2>' + obj['title'] + '</h2>';
@@ -49,6 +48,6 @@ Book.renderView = function (obj) {
     res += Renderer.renderProperty('Person:', obj['Person']);
     res += Renderer.renderProperty('Publisher:', obj['Publisher']);
 
-    res += '</table></div>';
+    res += '</table>';
     return res;
 };

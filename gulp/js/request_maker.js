@@ -1,4 +1,3 @@
-
 function invokeRequest(method, url, data, headers) {
     var self = this;
 
@@ -12,10 +11,6 @@ function invokeRequest(method, url, data, headers) {
     };
 
     return $.ajax('proxy.php?url=' + encodeURI(url), settings);
-}
-
-function getHeaders(jqXHR) {
-    return 'HTTP/1.1 ' + jqXHR.status + ' ' + jqXHR.statusText + "\n" + jqXHR.getAllResponseHeaders();
 }
 
 
@@ -58,6 +53,7 @@ function parseDocumentationUrlAndLoad(jqXHR) {
     return loadDocumentation(linkHeaders['http://www.w3.org/ns/hydra/core#apiDocumentation']);
 }
 
+
 function loadDocumentation(apiDocUrl) {
     var result = {};
 
@@ -76,16 +72,6 @@ function loadDocumentation(apiDocUrl) {
         error: function () {
             alert('Failed to parse vocab');
         }
-    });
-
-    return result;
-}
-
-function loadRegularUrl(url) {
-    var result = [];
-
-    invokeRequest('GET', url).done(function (data) {
-        result = JSON.parse(data);
     });
 
     return result;

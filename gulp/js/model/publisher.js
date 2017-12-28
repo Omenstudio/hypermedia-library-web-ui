@@ -2,8 +2,7 @@ var Publisher = {};
 Publisher.id = 'http://schema.org/Publisher';
 Publisher.collectionUrl = '';  // autowired
 Publisher.collectionButtonSelector = '.js-publishers-btn';
-
-
+Publisher.simpleName = 'Publisher';
 Publisher.propertiesMap = {
     'http://schema.org/name': 'name',
     'http://schema.org/foundingDate': 'foundingDate',
@@ -22,7 +21,7 @@ Publisher.renderShortView = function (obj) {
 
 
 Publisher.renderView = function (obj) {
-    var res = '<div class="item-wrapper">';
+    var res = '';
 
     if (typeof obj['name'] !== 'undefined') {
         res += '<h2>' + obj['name'] + '</h2>';
@@ -33,6 +32,6 @@ Publisher.renderView = function (obj) {
     res += Renderer.renderProperty('Founding date:', obj['foundingDate']);
     res += Renderer.renderProperty('Current location:', obj['location']);
 
-    res += '</table></div>';
+    res += '</table>';
     return res;
 };

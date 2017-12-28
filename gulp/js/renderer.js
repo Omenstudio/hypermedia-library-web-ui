@@ -1,5 +1,6 @@
 var Renderer = {};
 
+
 Renderer.updateMenu = function (collections) {
     for (var modelKey in Models) {
         var model = Models[modelKey];
@@ -44,13 +45,22 @@ Renderer.renderCollection = function (collection, model) {
 };
 
 
-
 Renderer.renderItem = function (item, model) {
-    $('.service-item-content').html(model.renderView(item));
+    var renderedData = model.renderView(item);
+
+    // Edit and Remove buttons
+    var buttons = '';
+    if (ServiceConnector.isModelSupportOperation(model, "PUT")) {
+        buttons += '<button class="btn btn-warning btn-edit" href="' + item.url + '">Edit ' + model.simpleName.toLowerCase() + '</button>';
+    }
+    if (ServiceConnector.isModelSupportOperation(model, "DELETE")) {
+        buttons += '<button class="btn btn-danger btn-remove" href="' + item.url + '">Delete ' + model.simpleName.toLowerCase() + '</button>';
+    }
+    buttons = '<div class="item-control-buttons">' + buttons + '</div>';
+
+    // setting content
+    $('.service-item-content').html('<div class="item-wrapper">' + renderedData + buttons + '</div>');
 };
-
-
-
 
 
 Renderer.renderProperty = function (title, prop) {

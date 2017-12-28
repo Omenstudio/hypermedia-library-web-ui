@@ -76,6 +76,10 @@ App.showCollectionForModel = function (model, sync) {
 
         $('.service-item-list li a').click(function (e) {
             e.preventDefault();
+
+            $('.service-item-list li').removeClass('active');
+            $(this).parent().addClass('active');
+
             App.showItemForModel($(this).attr('href'), model);
         });
 
@@ -104,7 +108,7 @@ App.showItemForModel = function (itemUrl, model) {
         // Update list and item areas
         Renderer.renderItem(item, model);
 
-        // Bind links
+        // Bind links to entities
         $('.popup').click(function (e) {
             e.preventDefault();
 
@@ -115,7 +119,7 @@ App.showItemForModel = function (itemUrl, model) {
             $('.control-buttons .btn').removeClass('btn-primary');
             $(model.collectionButtonSelector).addClass('btn-primary');
 
-            // Load list of authors
+            // Load list of model entities
             App.showCollectionForModel(model, true);
             $('.service-item-list a').each(function () {
                 if ($(this).attr('href') === itemUrl) {
@@ -124,9 +128,19 @@ App.showItemForModel = function (itemUrl, model) {
                 }
             });
 
-            // Load author
+            // Load entity
             App.showItemForModel(itemUrl, model);
         });
+
+        // Bind buttons (Remove and Delete)
+        $('.btn-remove').click(function () {
+            ServiceConnector.removeItem($(this).attr('href'));
+            App.showCollectionForModel(model);
+        });
+
+
+
+
 
         // End
         hideOverlay();

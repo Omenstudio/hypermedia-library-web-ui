@@ -13,6 +13,22 @@ function invokeRequest(method, url, data, headers) {
     return $.ajax('proxy.php?url=' + encodeURI(url), settings);
 }
 
+function invokeJsonRequest(method, url, data, headers) {
+    var self = this;
+
+    var settings = {
+        'type': method || 'GET',
+        'headers': { 'Accept': 'application/ld+json, application/json;q=0.1' },
+        'processData': false,
+        'data': data || null,
+        'dataType': 'json',
+        contentType: "application/json; charset=utf-8",
+        'async': false
+    };
+
+    return $.ajax('proxy.php?url=' + encodeURI(url), settings);
+}
+
 
 function parseLinkHeader(header) {
     var links = {};

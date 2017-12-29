@@ -82,7 +82,7 @@ Renderer.renderItemChange = function (model, item) {
 
 
     // Form
-    var formData = '<form id="save-form">';
+    var formData = '<form id="save-form" data-url="' + item.url + '">';
 
     var properties = ServiceConnector.vocab[model.id].supportedProperties;
     for (var i in properties) {
@@ -137,7 +137,10 @@ Renderer.renderPropertyInput = function (propertyObject, model, item) {
             '<div class="items" data-url="' + linkModel.collectionUrl + '" data-type="' + linkModel.id + '">' +
             '<div class="item" data-url="' + linkItem.url + '">' + linkModel.renderShortView(linkItem) + '</div>' +
             '</div>' +
-            '<div class="select-btns"><button class="btn btn-info btn-select-item">Select</button></div>' +
+            '<div class="select-btns">' +
+            '<button class="btn btn-info btn-select-item">Select</button>' +
+            '<button class="btn btn-info btn-clear-items">Clear</button>' +
+            '</div>' +
             '</div>';
     }
 

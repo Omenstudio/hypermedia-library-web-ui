@@ -188,9 +188,7 @@ App.showItemForModel = function (itemUrl, model) {
                 App.showItemForModel(item.url, model);
             });
             $('.btn-save').click(function () {
-
-
-
+                App.saveItemForModel($('#save-form'));
                 App.showItemForModel(item.url, model);
             });
 
@@ -214,12 +212,31 @@ App.showItemForModel = function (itemUrl, model) {
 };
 
 
-App.editItemForModel = function (itemUrl, model) {
-    //
+App.saveItemForModel = function (formNode) {
+    // First of all - collect linked Entities to field values
+    formNode.find('.item-select').each(function () {
+        var inputValue = '';
+        $(this).find('.item').each(function () {
+            var itemValueArr = $(this).attr('data-url').replace(new RegExp('-', 'g'), '/').split('/');
+            inputValue += itemValueArr[itemValueArr.length - 1] + ', ';
+        });
+        if (inputValue !== '') {
+            inputValue = inputValue.substr(0, inputValue.length - 2);
+        }
+
+        $(this).find('input').val(inputValue);
+    });
 
 
+    var data = {};
+    formNode.find('input').each(function () {
+        data[$(this).attr('name')] = $(this).val();
+    });
 
-
+    var url = formNode.attr('data-url');
+    data = JSON.stringify(data);
+    console.log(data);
+    ServiceConnector.saveItem(url, data);
 };
 
 

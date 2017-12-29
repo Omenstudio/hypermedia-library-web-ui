@@ -207,3 +207,7 @@ ServiceConnector.isModelSupportOperation = function(model, operation) {
 ServiceConnector.removeItem = function(url) {
     return invokeRequest('DELETE', url);
 };
+
+ServiceConnector.saveItem = function(url, data) {
+    return invokeJsonRequest('PUT', url, data);
+};

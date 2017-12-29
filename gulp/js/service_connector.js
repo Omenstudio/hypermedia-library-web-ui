@@ -1,6 +1,6 @@
 var ServiceConnector = {};
 ServiceConnector.vocab = '';
-
+ServiceConnector.collectionsMap = {}; // need to determine what's type of objects collection contains
 
 ServiceConnector.loadEntryPointAndDoc = function (entryPointUrl) {
     var foundCollections = [];
@@ -127,6 +127,8 @@ ServiceConnector.parseResponseAsModelObject = function (model, jsonItem) {
         if (propType === '' || typeof model.propertiesMap[propType] === 'undefined') {
             var potentialCollection = prop.__value;
             if (typeof potentialCollection !== 'undefined' && $.isArray(potentialCollection)) {
+                var collectionVocabType = propType;
+
                 // parse all objects
                 for (var i in potentialCollection) {
                     if (currentFieldArray.length === 0) {
@@ -135,6 +137,8 @@ ServiceConnector.parseResponseAsModelObject = function (model, jsonItem) {
 
                     currentFieldArray.push(ServiceConnector.parseResponseAsModelObject(Models[propType], potentialCollection[i]));
                 }
+
+                ServiceConnector.collectionsMap[collectionVocabType] = propType
             }
             else {
                 continue;

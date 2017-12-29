@@ -14,8 +14,15 @@ Article.propertiesMap = {
 };
 
 
+Article.renderLinkView = function (article) {
+    return '<li><a href="' + article.url + '" class="popup" data-model-id="http://schema.org/Article">' +
+        article.title +
+        '</a></li>'
+};
+
+
 Article.renderShortView = function (curArticle) {
-    var res = '<li><a href="'+curArticle.url+'">';
+    var res = '<li><a href="' + curArticle.url + '">';
 
     if (typeof curArticle.title !== 'undefined') {
         res += '<div class="short-article-title">' + curArticle.title + '</div>';
@@ -26,7 +33,7 @@ Article.renderShortView = function (curArticle) {
         for (var i in curArticle.authors) {
             authors_list_str += curArticle.authors[i].name + ', ';
         }
-        authors_list_str = authors_list_str.substr(0, authors_list_str.length-2);
+        authors_list_str = authors_list_str.substr(0, authors_list_str.length - 2);
 
         res += '<div class="short-article-authors">' + authors_list_str + '</div>';
     }
@@ -50,19 +57,14 @@ Article.renderView = function (obj) {
     if (typeof obj.authors !== 'undefined') {
         res += '<tr><th>Authors:</th><td>';
         for (var i in obj.authors) {
-            var author = obj.authors[i];
-            res += '<li><a href="' + author.url + '" class="popup" data-model-id="http://schema.org/Person">' +
-                    author.name  +
-                '</a></li>';
+            res += Author.renderLinkView(obj.authors[i]);
         }
         res += '</td></tr>';
     }
 
     // Magazine
     if (typeof obj.magazine !== 'undefined') {
-        res += '<tr><th>Magazine:</th><td><a href="' + obj.magazine.url + '" class="popup" data-model-id="http://schema.org/Book">' +
-                obj.magazine.title +
-            '</a></td></tr>';
+        res += Book.renderLinkView(obj.magazine, 'Magazine');
     }
 
     // Description
@@ -74,7 +76,7 @@ Article.renderView = function (obj) {
         pages += obj['start page']
     }
     if (typeof obj['end page'] !== 'undefined') {
-        pages += '-'+obj['end page']
+        pages += '-' + obj['end page']
     }
     res += Renderer.renderProperty('Pages:', pages);
 

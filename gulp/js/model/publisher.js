@@ -10,8 +10,15 @@ Publisher.propertiesMap = {
 };
 
 
+Publisher.renderLinkView = function (publisher) {
+    return '<li><a href="' + publisher.url + '" class="popup" data-model-id="http://schema.org/Publisher">' +
+        publisher.name +
+        '</a></li>'
+};
+
+
 Publisher.renderShortView = function (obj) {
-    var res = '<li><a href="'+obj.url+'"><table>';
+    var res = '<li><a href="' + obj.url + '"><table>';
 
     res += Renderer.renderProperty('', obj['name']);
 

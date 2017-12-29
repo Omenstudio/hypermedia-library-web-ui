@@ -136,18 +136,63 @@ App.showItemForModel = function (itemUrl, model) {
         $('.btn-edit').click(function () {
             Renderer.renderItemChange(model, item);
 
+            // Remove links
+            $('#save-form .items a td').each(function () {
+                var val = $(this).html();
+                $(this).closest('a').parent().html(val);
+            });
+
+            // Buttons to select, add ot clear link to other entities
+            $('.btn-select-item').click(function (e) {
+                e.preventDefault();
+                var itemsDiv = $(this).closest('.form-row').find('.items');
+                var model = Models[itemsDiv.attr('data-type')];
+                App.showSelectDialog(model, function (url, content) {
+                    itemsDiv.html('<div class="item" data-url="' + url + '">' + content + '</div>');
+                    itemsDiv.find('a td').each(function () {
+                        var oldHtml = $(this).html();
+                        $(this).closest('a').parent().html(oldHtml);
+                    });
+                });
+            });
+            $('.btn-add-item').click(function (e) {
+                e.preventDefault();
+                var itemsDiv = $(this).closest('.form-row').find('.items');
+                var model = Models[itemsDiv.attr('data-type')];
+                App.showSelectDialog(model, function (url, content) {
+                    var isFound = false;
+                    itemsDiv.find('.item').each(function () {
+                        if ($(this).attr('data-url') === url) {
+                            isFound = true;
+                            return 0;
+                        }
+                    });
+                    if (isFound) {
+                        return;
+                    }
+
+                    itemsDiv.append('<div class="item" data-url="' + url + '">' + content + '</div>');
+                    itemsDiv.find('a td').each(function () {
+                        var oldHtml = $(this).html();
+                        $(this).closest('a').parent().html(oldHtml);
+                    });
+                });
+            });
+            $('.btn-clear-items').click(function (e) {
+                e.preventDefault();
+                $(this).closest('.form-row').find('.item').remove();
+            });
+
+            // Buttons to control saving / cancelling
             $('.btn-cancel').click(function () {
                 App.showItemForModel(item.url, model);
             });
-
             $('.btn-save').click(function () {
 
 
 
                 App.showItemForModel(item.url, model);
             });
-
-
 
 
         });
@@ -175,6 +220,13 @@ App.editItemForModel = function (itemUrl, model) {
 
 
 
+};
+
+
+App.showSelectDialog = function (model, callbackFunc) {
+    var itemsList = ServiceConnector.loadCollection(model, model.collectionUrl);
+    var itemsListHtml = Renderer.buildCollectionHtml(itemsList, model);
+    showDialog('Select the ' + model.simpleName, itemsListHtml, callbackFunc);
 };
 
 
@@ -233,14 +285,6 @@ App.initialize = function () {
     $('#service-screen').css('display', 'none');
 };
 
-
-function showOverlay() {
-    $('#overlay').css('display', 'grid');
-}
-
-function hideOverlay() {
-    $('#overlay').css('display', 'none');
-}
 
 $(document).ready(function () {
     hideOverlay();

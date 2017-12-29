@@ -16,8 +16,19 @@ Book.propertiesMap = {
 };
 
 
+Book.renderLinkView = function (book, customTitle) {
+    if (typeof customTitle === 'undefined') {
+        customTitle = 'Book';
+    }
+
+    return '<tr><th>' + customTitle + ':</th><td><a href="' + book.url + '" class="popup" data-model-id="http://schema.org/Book">' +
+        book.title +
+        '</a></td></tr>'
+};
+
+
 Book.renderShortView = function (obj) {
-    var res = '<li><a href="'+obj.url+'"><table>';
+    var res = '<li><a href="' + obj.url + '"><table>';
 
     res += Renderer.renderProperty('', obj['title']);
 

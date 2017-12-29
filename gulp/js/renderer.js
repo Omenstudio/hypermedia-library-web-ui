@@ -31,7 +31,7 @@ Renderer.resetItemArea = function () {
 };
 
 
-Renderer.renderCollection = function (collection, model) {
+Renderer.buildCollectionHtml = function(collection, model) {
     var res = '<ul>';
 
     if (collection.length !== 0) {
@@ -44,11 +44,13 @@ Renderer.renderCollection = function (collection, model) {
         res += '<p class="tip">There are no ' + model.simpleName + 's on the service</p>';
     }
 
-
-
     res += '</ul>';
+    return res;
+};
 
-    $('.service-item-list').html(res);
+
+Renderer.renderCollection = function (collection, model) {
+    $('.service-item-list').html(Renderer.buildCollectionHtml(collection, model));
 };
 
 
@@ -70,7 +72,7 @@ Renderer.renderItem = function (item, model) {
 };
 
 
-Renderer.renderItemChange = function(model, item) {
+Renderer.renderItemChange = function (model, item) {
     // Title
     var action = 'Edit';
     if (typeof item === 'undefined') {
@@ -93,22 +95,21 @@ Renderer.renderItemChange = function(model, item) {
     // Save and Cancel buttons
     var saveUrl = model.collectionUrl;
     if (typeof item !== 'undefined') {
-        saveUrl  = item.url;
+        saveUrl = item.url;
     }
     var cancelUrl = model.collectionUrl;
     if (typeof item !== 'undefined') {
-        cancelUrl  = item.url;
+        cancelUrl = item.url;
     }
     var buttons = '<div class="item-control-buttons">' +
-                        '<button class="btn btn-success btn-save href="' + saveUrl + '">Save</button>' +
-                        '<button class="btn btn-danger btn-cancel" href="' + cancelUrl + '">Cancel</button>' +
-                    '</div>';
+        '<button class="btn btn-success btn-save href="' + saveUrl + '">Save</button>' +
+        '<button class="btn btn-danger btn-cancel" href="' + cancelUrl + '">Cancel</button>' +
+        '</div>';
 
 
     // Build
     $('.service-item-content').html('<div class="item-wrapper">' + title + formData + buttons + '</div>');
 };
-
 
 
 Renderer.renderProperty = function (title, prop) {
@@ -120,17 +121,61 @@ Renderer.renderProperty = function (title, prop) {
 
 
 Renderer.renderPropertyInput = function (propertyObject, model, item) {
-    var modelPropertyName = model.propertiesMap[propertyObject.property];
+    var type = propertyObject.property;
+    var modelPropertyName = model.propertiesMap[type];
 
-    var value = item[modelPropertyName];
-    if (typeof value === 'undefined') {
-        value = '';
+
+    // If field is link to other Service entity ->
+    //      we need to render it properly
+    if (typeof Models[type] !== 'undefined') {
+        var linkModel = Models[type];
+        var linkItem = item[modelPropertyName];
+
+        return '<div class="form-row item-select">' +
+            '<label>' + propertyObject.hydra_description + '</label>' +
+            '<input name="' + propertyObject.hydra_title + '" hidden="hidden"/>' +
+            '<div class="items" data-url="' + linkModel.collectionUrl + '" data-type="' + linkModel.id + '">' +
+            '<div class="item" data-url="' + linkItem.url + '">' + linkModel.renderShortView(linkItem) + '</div>' +
+            '</div>' +
+            '<div class="select-btns"><button class="btn btn-info btn-select-item">Select</button></div>' +
+            '</div>';
     }
 
+    // If it is collection -> output as collection
+    if (typeof ServiceConnector.collectionsMap[type] !== 'undefined') {
+        type = ServiceConnector.collectionsMap[type];
+        modelPropertyName = model.propertiesMap[type];
+
+        if (typeof Models[type] !== 'undefined') {
+            var linkItemsHtml = '';
+            var linkModel = Models[type];
+
+            for (var i in item[modelPropertyName]) {
+                var linkItem = item[modelPropertyName][i];
+
+                linkItemsHtml += '<div class="item" data-url="' + linkItem.url + '">' +
+                    linkModel.renderShortView(linkItem) +
+                    '</div>';
+            }
+
+            return '<div class="form-row item-select">' +
+                '<label>' + propertyObject.hydra_description + '</label>' +
+                '<input name="' + propertyObject.hydra_title + '" hidden="hidden"/>' +
+                '<div class="items" data-url="' + linkModel.collectionUrl + '" data-type="' + linkModel.id + '">' + linkItemsHtml + '</div>' +
+                '<div class="select-btns">' +
+                '<button class="btn btn-info btn-add-item">Add</button>' +
+                '<button class="btn btn-info btn-clear-items">Clear</button>' +
+                '</div>' +
+                '</div>';
+        }
+    }
+
+
+    // If it is usual field
     return '<div class="form-row">' +
-               '<label>' + propertyObject.hydra_description + '</label>' +
-               '<input name="' + propertyObject.hydra_title + '" ' +
-                       'placeholder="' + modelPropertyName + '" ' +
-                       'value="' + value + '" />' +
-           '</div>';
+        '<label>' + propertyObject.hydra_description + '</label>' +
+        '<input name="' + propertyObject.hydra_title + '" ' +
+        'placeholder="' + modelPropertyName + '" ' +
+        'value="' + item[modelPropertyName] + '" />' +
+        '</div>';
 };

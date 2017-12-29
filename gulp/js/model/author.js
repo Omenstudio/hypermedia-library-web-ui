@@ -9,8 +9,15 @@ Author.propertiesMap = {
 };
 
 
+Author.renderLinkView = function (author) {
+    return '<li><a href="' + author.url + '" class="popup" data-model-id="http://schema.org/Person">' +
+        author.name +
+        '</a></li>'
+};
+
+
 Author.renderShortView = function (obj) {
-    var res = '<li><a href="'+obj.url+'"><table>';
+    var res = '<li><a href="' + obj.url + '"><table>';
 
     res += Renderer.renderProperty('', obj['name']);
 

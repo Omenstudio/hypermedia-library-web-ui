@@ -126,7 +126,8 @@ ServiceConnector.parseResponseAsModelObject = function (model, jsonItem) {
         var currentFieldArray = [];
         if (propType === '' || typeof model.propertiesMap[propType] === 'undefined') {
             var potentialCollection = prop.__value;
-            if (typeof potentialCollection !== 'undefined' && $.isArray(potentialCollection)) {
+            if (typeof potentialCollection !== 'undefined' && $.isArray(potentialCollection) &&
+                potentialCollection.length > 0) {
                 var collectionVocabType = propType;
 
                 // parse all objects
@@ -152,12 +153,17 @@ ServiceConnector.parseResponseAsModelObject = function (model, jsonItem) {
             if (currentFieldArray.length > 0) {
                 propValue = currentFieldArray
             }
-            else {
+            else { //if (typeof prop !== 'object' || prop.length > 0) {
                 propValue = ServiceConnector.parseToValue(prop);
             }
         }
         catch (err) {
-            propValue = ServiceConnector.parseResponseAsModelObject(model, prop.__value);
+            try {
+                propValue = ServiceConnector.parseResponseAsModelObject(model, prop.__value);
+            }
+            catch(err) {
+                return answer;
+            }
         }
 
         answer[propKey] = propValue;
@@ -210,4 +216,8 @@ ServiceConnector.removeItem = function(url) {
 
 ServiceConnector.saveItem = function(url, data) {
     return invokeJsonRequest('PUT', url, data);
+};
+
+ServiceConnector.addItem = function(url, data) {
+    return invokeJsonRequest('POST', url, data);
 };

@@ -31,7 +31,7 @@ Renderer.resetItemArea = function () {
 };
 
 
-Renderer.buildCollectionHtml = function(collection, model) {
+Renderer.buildCollectionHtml = function (collection, model) {
     var res = '<ul>';
 
     if (collection.length !== 0) {
@@ -51,6 +51,7 @@ Renderer.buildCollectionHtml = function(collection, model) {
 
 Renderer.renderCollection = function (collection, model) {
     $('.service-item-list').html(Renderer.buildCollectionHtml(collection, model));
+    $('.service-item-list').prepend('<div class="btn-add-wrapper"><button class="btn btn-info btn-add-entity">Add new ' + model.simpleName + '</button></div>');
 };
 
 
@@ -72,7 +73,7 @@ Renderer.renderItem = function (item, model) {
 };
 
 
-Renderer.renderItemChange = function (model, item) {
+Renderer.renderItemChange = function (model, postUrl, item) {
     // Title
     var action = 'Edit';
     if (typeof item === 'undefined') {
@@ -82,7 +83,7 @@ Renderer.renderItemChange = function (model, item) {
 
 
     // Form
-    var formData = '<form id="save-form" data-url="' + item.url + '">';
+    var formData = '<form id="save-form" data-url="' + postUrl + '">';
 
     var properties = ServiceConnector.vocab[model.id].supportedProperties;
     for (var i in properties) {
@@ -129,13 +130,18 @@ Renderer.renderPropertyInput = function (propertyObject, model, item) {
     //      we need to render it properly
     if (typeof Models[type] !== 'undefined') {
         var linkModel = Models[type];
-        var linkItem = item[modelPropertyName];
+        var linkItem = typeof item === 'undefined' ? null : item[modelPropertyName];
+
+        var itemsHtml = '';
+        if (typeof linkItem !== 'undefined' && linkItem !== null) {
+            itemsHtml += '<div class="item" data-url="' + linkItem.url + '">' + linkModel.renderShortView(linkItem) + '</div>';
+        }
 
         return '<div class="form-row item-select">' +
             '<label>' + propertyObject.hydra_description + '</label>' +
             '<input name="' + propertyObject.hydra_title + '" hidden="hidden"/>' +
             '<div class="items" data-url="' + linkModel.collectionUrl + '" data-type="' + linkModel.id + '">' +
-            '<div class="item" data-url="' + linkItem.url + '">' + linkModel.renderShortView(linkItem) + '</div>' +
+            itemsHtml +
             '</div>' +
             '<div class="select-btns">' +
             '<button class="btn btn-info btn-select-item">Select</button>' +
@@ -153,12 +159,14 @@ Renderer.renderPropertyInput = function (propertyObject, model, item) {
             var linkItemsHtml = '';
             var linkModel = Models[type];
 
-            for (var i in item[modelPropertyName]) {
-                var linkItem = item[modelPropertyName][i];
+            if (typeof item !== 'undefined') {
+                for (var i in item[modelPropertyName]) {
+                    var linkItem = item[modelPropertyName][i];
 
-                linkItemsHtml += '<div class="item" data-url="' + linkItem.url + '">' +
-                    linkModel.renderShortView(linkItem) +
-                    '</div>';
+                    linkItemsHtml += '<div class="item" data-url="' + linkItem.url + '">' +
+                        linkModel.renderShortView(linkItem) +
+                        '</div>';
+                }
             }
 
             return '<div class="form-row item-select">' +
@@ -174,11 +182,16 @@ Renderer.renderPropertyInput = function (propertyObject, model, item) {
     }
 
 
+    var inputValue = '';
+    if (typeof item !== 'undefined' && typeof item[modelPropertyName] !== 'undefined') {
+        inputValue = item[modelPropertyName];
+    }
+
     // If it is usual field
     return '<div class="form-row">' +
         '<label>' + propertyObject.hydra_description + '</label>' +
         '<input name="' + propertyObject.hydra_title + '" ' +
         'placeholder="' + modelPropertyName + '" ' +
-        'value="' + item[modelPropertyName] + '" />' +
+        'value="' + inputValue + '" />' +
         '</div>';
 };

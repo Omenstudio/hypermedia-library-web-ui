@@ -31,28 +31,27 @@ App.connectToService = function (service_url) {
 
 
         // Scroll then fix feature
-        var fixmeTop = $('.fixme').offset().top;
-        var fixmeLeft = $('.fixme').offset().left - 8;
-        var fixmeWidth = $('.fixme').width();
-
-        $(window).scroll(function () {                  // assign scroll event listener
-            var currentScroll = $(window).scrollTop(); // get current position
-            if (currentScroll >= fixmeTop) {           // apply position: fixed if you
-                $('.fixme').css({                      // scroll to that element or below it
-                    position: 'fixed',
-                    top: '0',
-                    left: fixmeLeft,
-                    width: fixmeWidth,
-                    height: screen.height
-                });
-            } else {                                   // apply position: static
-                $('.fixme').css({                      // if you scroll above it
-                    position: 'static',
-                    height: 'auto'
-                });
-            }
-
-        });
+        // TODO restore this
+        // var fixmeTop = $('.fixme').offset().top;
+        // var fixmeLeft = $('.fixme').offset().left - 8;
+        // var fixmeWidth = $('.fixme').width();
+        // $(window).scroll(function () {                  // assign scroll event listener
+        //     var currentScroll = $(window).scrollTop(); // get current position
+        //     if (currentScroll >= fixmeTop) {           // apply position: fixed if you
+        //         $('.fixme').css({                      // scroll to that element or below it
+        //             position: 'fixed',
+        //             top: '0',
+        //             left: fixmeLeft,
+        //             width: fixmeWidth,
+        //             height: screen.height
+        //         });
+        //     } else {                                   // apply position: static
+        //         $('.fixme').css({                      // if you scroll above it
+        //             position: 'static',
+        //             height: 'auto'
+        //         });
+        //     }
+        // });
 
     }, 1);
 
@@ -74,6 +73,70 @@ App.showCollectionForModel = function (model, sync) {
 
         Renderer.resetItemArea();
 
+        // Add new Entity object Button
+        $('.btn-add-entity').click(function (e) {
+            e.preventDefault();
+            Renderer.renderItemChange(model, model.collectionUrl);
+
+            // Remove links
+            $('#save-form .items a td').each(function () {
+                var val = $(this).html();
+                $(this).closest('a').parent().html(val);
+            });
+
+            // Buttons to select, add ot clear link to other entities
+            $('.btn-select-item').click(function (e) {
+                e.preventDefault();
+                var itemsDiv = $(this).closest('.form-row').find('.items');
+                var model = Models[itemsDiv.attr('data-type')];
+                App.showSelectDialog(model, function (url, content) {
+                    itemsDiv.html('<div class="item" data-url="' + url + '">' + content + '</div>');
+                    itemsDiv.find('a td').each(function () {
+                        var oldHtml = $(this).html();
+                        $(this).closest('a').parent().html(oldHtml);
+                    });
+                });
+            });
+            $('.btn-add-item').click(function (e) {
+                e.preventDefault();
+                var itemsDiv = $(this).closest('.form-row').find('.items');
+                var model = Models[itemsDiv.attr('data-type')];
+                App.showSelectDialog(model, function (url, content) {
+                    var isFound = false;
+                    itemsDiv.find('.item').each(function () {
+                        if ($(this).attr('data-url') === url) {
+                            isFound = true;
+                            return 0;
+                        }
+                    });
+                    if (isFound) {
+                        return;
+                    }
+
+                    itemsDiv.append('<div class="item" data-url="' + url + '">' + content + '</div>');
+                    itemsDiv.find('a td').each(function () {
+                        var oldHtml = $(this).html();
+                        $(this).closest('a').parent().html(oldHtml);
+                    });
+                });
+            });
+            $('.btn-clear-items').click(function (e) {
+                e.preventDefault();
+                $(this).closest('.form-row').find('.item').remove();
+            });
+
+            // Buttons to control saving / cancelling
+            $('.btn-cancel').click(function () {
+                App.showItemForModel(item.url, model);
+            });
+            $('.btn-save').click(function () {
+                App.saveItemForModel($('#save-form'), true);
+                App.showCollectionForModel(model);
+            });
+        });
+
+
+        // Item loading link
         $('.service-item-list li a').click(function (e) {
             e.preventDefault();
 
@@ -134,7 +197,7 @@ App.showItemForModel = function (itemUrl, model) {
 
         // Bind Edit button
         $('.btn-edit').click(function () {
-            Renderer.renderItemChange(model, item);
+            Renderer.renderItemChange(model, item.url, item);
 
             // Remove links
             $('#save-form .items a td').each(function () {
@@ -212,7 +275,7 @@ App.showItemForModel = function (itemUrl, model) {
 };
 
 
-App.saveItemForModel = function (formNode) {
+App.saveItemForModel = function (formNode, is_new) {
     // First of all - collect linked Entities to field values
     formNode.find('.item-select').each(function () {
         var inputValue = '';
@@ -233,10 +296,12 @@ App.saveItemForModel = function (formNode) {
         data[$(this).attr('name')] = $(this).val();
     });
 
-    var url = formNode.attr('data-url');
-    data = JSON.stringify(data);
-    console.log(data);
-    ServiceConnector.saveItem(url, data);
+    if (typeof is_new === 'undefined') {
+        ServiceConnector.saveItem(formNode.attr('data-url'), JSON.stringify(data));
+    }
+    else {
+        ServiceConnector.addItem(formNode.attr('data-url'), JSON.stringify(data));
+    }
 };
 
 

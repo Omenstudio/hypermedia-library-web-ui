@@ -51,7 +51,12 @@ Renderer.buildCollectionHtml = function (collection, model) {
 
 Renderer.renderCollection = function (collection, model) {
     $('.service-item-list').html(Renderer.buildCollectionHtml(collection, model));
-    $('.service-item-list').prepend('<div class="btn-add-wrapper"><button class="btn btn-info btn-add-entity">Add new ' + model.simpleName + '</button></div>');
+    var collectionHtml = '<div class="btn-add-wrapper">' +
+        '<button class="btn btn-info btn-add-entity">' +
+        '<i class="fa fa-plus"></i> Add new ' + model.simpleName +
+        '</button>' +
+        '</div>';
+    $('.service-item-list').prepend(collectionHtml);
 };
 
 
@@ -61,10 +66,14 @@ Renderer.renderItem = function (item, model) {
     // Edit and Remove buttons
     var buttons = '';
     if (ServiceConnector.isModelSupportOperation(model, "PUT")) {
-        buttons += '<button class="btn btn-warning btn-edit" href="' + item.url + '">Edit ' + model.simpleName.toLowerCase() + '</button>';
+        buttons += '<button class="btn btn-warning btn-edit" href="' + item.url + '">' +
+            '<i class="fa fa-pencil"></i> Edit ' + model.simpleName.toLowerCase() + '' +
+            '</button>';
     }
     if (ServiceConnector.isModelSupportOperation(model, "DELETE")) {
-        buttons += '<button class="btn btn-danger btn-remove" href="' + item.url + '">Delete ' + model.simpleName.toLowerCase() + '</button>';
+        buttons += '<button class="btn btn-danger btn-remove" href="' + item.url + '">' +
+            '<i class="fa fa-trash"></i> Delete ' + model.simpleName.toLowerCase() +
+            '</button>';
     }
     buttons = '<div class="item-control-buttons">' + buttons + '</div>';
 
@@ -103,8 +112,8 @@ Renderer.renderItemChange = function (model, postUrl, item) {
         cancelUrl = item.url;
     }
     var buttons = '<div class="item-control-buttons">' +
-        '<button class="btn btn-success btn-save href="' + saveUrl + '">Save</button>' +
-        '<button class="btn btn-danger btn-cancel" href="' + cancelUrl + '">Cancel</button>' +
+        '<button class="btn btn-success btn-save href="' + saveUrl + '"><i class="fa fa-floppy-o"></i> Save</button>' +
+        '<button class="btn btn-danger btn-cancel" href="' + cancelUrl + '"><i class="fa fa-times"></i> Cancel</button>' +
         '</div>';
 
 
@@ -203,6 +212,9 @@ Renderer.renderPropertyInput = function (propertyObject, model, item) {
             'class="datepicker" type="text" />' +
             '</div>';
     }
+
+    // Value may contain quotes, which must be escaped
+    inputValue = inputValue.toString().replace(/\"/g, '&quot;');
 
     // If it is usual field
     return '<div class="form-row">' +

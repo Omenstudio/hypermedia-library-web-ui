@@ -79,7 +79,12 @@ App.showCollectionForModel = function (model, sync) {
             Renderer.renderItemChange(model, model.collectionUrl);
 
             // Initialize Datepicker
-            $('.datepicker').datepicker({dateFormat: 'yy-mm-dd'});
+            $('.datepicker').datepicker({
+                dateFormat: 'yy-mm-dd',
+                changeMonth: true,
+                changeYear: true,
+                yearRange: '1800:2018'
+            });
 
             // Remove links
             $('#save-form .items a td').each(function () {
@@ -207,12 +212,21 @@ App.showItemForModel = function (itemUrl, model) {
             Renderer.renderItemChange(model, item.url, item);
 
             // Initialize Datepicker
-            $('.datepicker').datepicker({dateFormat: 'yy-mm-dd'});
+            $('.datepicker').datepicker({
+                dateFormat: 'yy-mm-dd',
+                changeMonth: true,
+                changeYear: true,
+                yearRange: '1800:2018'
+            });
 
             // Remove links
             $('#save-form .items a td').each(function () {
                 var val = $(this).html();
                 $(this).closest('a').parent().html(val);
+            });
+            $('#save-form .items li a').each(function () {
+                var val = $(this).html();
+                $(this).parent().html(val);
             });
 
             // Buttons to select, add ot clear link to other entities
@@ -273,7 +287,6 @@ App.showItemForModel = function (itemUrl, model) {
             ServiceConnector.removeItem($(this).attr('href'));
             App.showCollectionForModel(model);
         });
-
 
         // End
         hideOverlay();

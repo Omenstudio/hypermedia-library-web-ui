@@ -1,3 +1,5 @@
+# composer
+/vendor/
 
 # gulp
 /gulp/node_modules

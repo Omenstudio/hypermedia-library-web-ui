@@ -115,6 +115,10 @@ Renderer.renderItemChange = function (model, postUrl, item) {
 
 Renderer.renderProperty = function (title, prop) {
     if (typeof prop !== 'undefined') {
+        if (title.toLowerCase().indexOf('date') !== -1) {
+            prop = Renderer.formatDate(prop);
+        }
+
         return '<tr><th>' + title + '</th><td>' + prop + '</td></tr>';
     }
     return '';
@@ -181,10 +185,23 @@ Renderer.renderPropertyInput = function (propertyObject, model, item) {
         }
     }
 
-
     var inputValue = '';
     if (typeof item !== 'undefined' && typeof item[modelPropertyName] !== 'undefined') {
         inputValue = item[modelPropertyName];
+    }
+
+
+    // If it is Date field
+    if (propertyObject.property.toLowerCase().indexOf('date') !== -1) {
+        inputValue = Renderer.formatDate(inputValue);
+
+        return '<div class="form-row">' +
+            '<label>' + propertyObject.hydra_description + '</label>' +
+            '<input name="' + propertyObject.hydra_title + '" ' +
+            'placeholder="' + modelPropertyName + '" ' +
+            'value="' + inputValue + '" ' +
+            'class="datepicker" type="text" />' +
+            '</div>';
     }
 
     // If it is usual field
@@ -194,4 +211,23 @@ Renderer.renderPropertyInput = function (propertyObject, model, item) {
         'placeholder="' + modelPropertyName + '" ' +
         'value="' + inputValue + '" />' +
         '</div>';
+};
+
+
+Renderer.formatDate = function(dateStr) {
+    if (dateStr === '') {
+        return '';
+    }
+
+    var ans = new Date(Date.parse(dateStr));
+    var year = ans.getFullYear().toString();
+    var month = (1+ans.getMonth()).toString();
+    if (month.length === 1) {
+        month = '0' + month;
+    }
+    var day = ans.getDate().toString();
+    if (day.length === 1) {
+        day = '0' + day;
+    }
+    return year + '-' + month + '-' + day;
 };

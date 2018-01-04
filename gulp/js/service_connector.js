@@ -159,7 +159,11 @@ ServiceConnector.parseResponseAsModelObject = function (model, jsonItem) {
         }
         catch (err) {
             try {
-                propValue = ServiceConnector.parseResponseAsModelObject(model, prop.__value);
+                var newModel = Models[prop.__value['@type']];
+                if (typeof newModel === 'undefined') {
+                    newModel = Models[prop.__iri];
+                }
+                propValue = ServiceConnector.parseResponseAsModelObject(newModel, prop.__value);
             }
             catch(err) {
                 return answer;

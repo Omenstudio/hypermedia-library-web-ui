@@ -5,7 +5,8 @@ Author.collectionButtonSelector = '.js-authors-btn';
 Author.simpleName = 'Author';
 Author.propertiesMap = {
     'http://schema.org/name': 'name',
-    'http://schema.org/birthDate': 'birthDate'
+    'http://schema.org/birthDate': 'birthDate',
+    'http://schema.org/birthPlace': 'birthPlace'
 };
 
 
@@ -35,6 +36,7 @@ Author.renderView = function (obj) {
 
     res += '<table>';
     res += Renderer.renderProperty('Date of birth:', obj['birthDate']);
+    res += Renderer.renderProperty('Place of birth:', obj['birthPlace']);
     res += '</table>';
 
     return res;

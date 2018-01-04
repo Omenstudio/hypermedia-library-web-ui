@@ -78,6 +78,9 @@ App.showCollectionForModel = function (model, sync) {
             e.preventDefault();
             Renderer.renderItemChange(model, model.collectionUrl);
 
+            // Initialize Datepicker
+            $('.datepicker').datepicker({dateFormat: 'yy-mm-dd'});
+
             // Remove links
             $('#save-form .items a td').each(function () {
                 var val = $(this).html();
@@ -144,6 +147,10 @@ App.showCollectionForModel = function (model, sync) {
             $(this).parent().addClass('active');
 
             App.showItemForModel($(this).attr('href'), model);
+
+            $('html, body').animate({
+                scrollTop: $("#service-screen").offset().top
+            }, 300);
         });
 
         // End
@@ -198,6 +205,9 @@ App.showItemForModel = function (itemUrl, model) {
         // Bind Edit button
         $('.btn-edit').click(function () {
             Renderer.renderItemChange(model, item.url, item);
+
+            // Initialize Datepicker
+            $('.datepicker').datepicker({dateFormat: 'yy-mm-dd'});
 
             // Remove links
             $('#save-form .items a td').each(function () {

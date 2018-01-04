@@ -23,7 +23,7 @@
             },
             "require": {
                 "lib-pcre": ">=4.0",
-                "php": ">=5.3.0"
+                "php": "<5.6.0"
             },
             "type": "library",
             "autoload": {

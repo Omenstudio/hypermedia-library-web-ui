@@ -1,20 +1,20 @@
 {
-    "name": "ml/hydra-console",
-    "type": "project",
-    "description": "HydraConsole is a generic API console for Hydra-powered Web APIs",
-    "keywords": [ "JSON-LD", "jsonld", "Hydra", "Web API", "API console", "API client", "hypermedia", "REST" ],
-    "homepage": "http://www.markus-lanthaler.com/hydra/",
-    "license": "MIT",
-    "authors": [
-        {
-            "name": "Markus Lanthaler",
-            "email": "mail@markus-lanthaler.com",
-            "homepage": "http://www.markus-lanthaler.com",
-            "role": "Developer"
-        }
-    ],
-    "minimum-stability": "dev",
-    "require": {
-        "ml/json-ld": "dev-expansion-debug"
+  "name": "ml/library-web-ui",
+  "type": "project",
+  "description": "Web application for simple library with books and articles. Json-ld, Hydra, Hypermedia support",
+  "keywords": [],
+  "homepage": "https://github.com/Omenstudio/hypermedia-library-web-ui",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Rutin Vasily",
+      "email": "vasil.rutin@gmail.com",
+      "role": "Developer"
     }
+  ],
+  "minimum-stability": "dev",
+  "require": {
+    "ml/json-ld": "dev-expansion-debug",
+    "php": "^5.5"
+  }
 }

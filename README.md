@@ -31,3 +31,5 @@ Default Gulp task include browser-sync, sass "compilation" and js minification.
 - Hypermedia web API service, which use Hydra and Json-ld: https://github.com/Omenstudio/library-hypermedia-service-books
 - Hypermedia web API service, which use Hydra and Json-ld: https://github.com/Omenstudio/library-hypermedia-service-articles
 - Based on the original [HydraConsole](https://github.com/lanthaler/HydraConsole) application.
+
+Working example available at Heroku: https://library-webui.herokuapp.com Heroku servers go to sleep after 30 min of inactivity, so first request my be long.

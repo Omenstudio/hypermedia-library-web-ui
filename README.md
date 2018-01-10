@@ -19,7 +19,7 @@ If you want to develop/extend the app, you also may need:
 
 #### For development:
 - Install Node.js, if not installed yet. Then install Gulp globally via `npm install --global gulp`
-- All sass and js sources located in directory gulp: `cd gulp`
+- All sass and js sources located in directory gulp: `cd src`
 - Install all dependencies: `npm install` 
 - Run gulp via `gulp`
 

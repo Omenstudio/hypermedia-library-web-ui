@@ -1,8 +1,8 @@
 # composer
 /vendor/
 
-# gulp
-/gulp/node_modules
+# npm modules
+/src/node_modules/
 
 # idea
 .idea

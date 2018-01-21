@@ -287,6 +287,13 @@ App.showItemForModel = function (itemUrl, model) {
             ServiceConnector.removeItem($(this).attr('href'));
             App.showCollectionForModel(model);
         });
+		
+		// make li elem active
+        $('.service-item-list ul li').each(function () {
+            if ($(this).find('a').attr('href') === itemUrl) {
+                $(this).addClass('active');
+            }
+        });
 
         // End
         hideOverlay();

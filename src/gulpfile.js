@@ -38,7 +38,7 @@ gulp.task('js', function() {
 		'js/**/*.js'
 		])
 	.pipe(concat('app.min.js'))
-	.pipe(uglify())
+	// .pipe(uglify())
 	.pipe(gulp.dest('../js'));
 });
 

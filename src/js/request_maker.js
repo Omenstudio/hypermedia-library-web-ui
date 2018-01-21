@@ -61,7 +61,7 @@ function parseLinkHeader(header) {
 }
 
 
-function parseDocumentationUrlAndLoad(jqXHR) {
+function parseDocumentation(jqXHR) {
     var linkHeaders = parseLinkHeader(jqXHR.getResponseHeader('Link'));
     if (!linkHeaders['http://www.w3.org/ns/hydra/core#apiDocumentation']) {
         alert('Cannot find link to vocab header');

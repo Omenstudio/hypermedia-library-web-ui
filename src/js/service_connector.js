@@ -12,7 +12,7 @@ ServiceConnector.loadEntryPointAndDoc = function (entryPointUrl) {
 
         // Firstly we need to parse documentation
         if (ServiceConnector.vocab === '') {
-            ServiceConnector.vocab = parseDocumentationUrlAndLoad(jqXHR);
+            ServiceConnector.vocab = parseDocumentation(jqXHR);
         }
 
         // From proxy.php we get JSON response, which is already converted from JSON-LD to usual json
@@ -35,22 +35,46 @@ ServiceConnector._parseEntryPoint = function (resource) {
     //      publishers: /api/publishers
     // We need to iterate over books, authors and publishers and
     // detect which type of Entity they contain
+    // And additional checks if collection support GET operation
     var foundCollections = [];
 
-    for (var entryPointItemKey in resource) {
+    for (var entryPointPropertyKey in resource) {
         // skip if this is not regular field
-        if (entryPointItemKey[0] === '@') {
+        if (entryPointPropertyKey[0] === '@') {
             continue;
         }
 
         // Detect url, type, and collection item
-        var item = resource[entryPointItemKey];
-        var itemUrl = item.__value.__value['@id'];
-        var itemType = ServiceConnector.vocab[item.__iri]['range'];
-        var memberOf = ServiceConnector.vocab[itemType]['member_of'];
-        // var description = ServiceConnector.vocab[itemType]['description'];
+        var entryPointProperty = resource[entryPointPropertyKey];
+        var collectionUrl = entryPointProperty.__value.__value['@id'];
+        var collectionType = ServiceConnector.vocab[entryPointProperty.__iri]['range']; // vocab:AuthorCollection
+        var memberOf = ServiceConnector.vocab[collectionType]['member_of'];
 
-        foundCollections.push({itemId: memberOf, url: itemUrl});
+        // Expect memberOf not null, elsewhere don't know what type collectioon contains
+        if (typeof memberOf === 'undefined' || memberOf.trim().length === 0) {
+            continue;
+        }
+
+        // Check if GET operation supported
+        var getOperationSupported = false;
+        if (collectionType in ServiceConnector.vocab) {
+            var supportedOperations = ServiceConnector.vocab[collectionType].supportedOperations;
+            for (var operationId in supportedOperations) {
+                var operationMethod = supportedOperations[operationId].method;
+                if (operationMethod.toLowerCase() === 'get') {
+                    getOperationSupported = true;
+                    break;
+                }
+            }
+        }
+        if (!getOperationSupported) {
+            continue;
+        }
+
+        // Define collection found only if
+        //  * we found type of the collection
+        //  * collection supports GET operation
+        foundCollections.push({itemId: memberOf, url: collectionUrl});
     }
 
     return foundCollections;
@@ -160,7 +184,7 @@ ServiceConnector.parseResponseAsModelObject = function (model, jsonItem) {
         catch (err) {
             try {
                 var newModel = Models[prop.__value['@type']];
-                if (typeof newModel === 'undefined') {
+                if (typeof newModel === 'undefined' && typeof prop.__iri !== 'undefined') {
                     newModel = Models[prop.__iri];
                 }
                 propValue = ServiceConnector.parseResponseAsModelObject(newModel, prop.__value);

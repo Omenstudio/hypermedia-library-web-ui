@@ -14,7 +14,12 @@ App.connectToService = function (service_url) {
         // first of all - parse entrypoint
         var foundCollections = ServiceConnector.loadEntryPointAndDoc(service_url);
         for (var i in foundCollections) {
-            Models[foundCollections[i].itemId].collectionUrl = foundCollections[i].url;
+            // Determine if we can work with current collection type
+            var collectionElementType = foundCollections[i].itemId;
+            if (collectionElementType in Models) {
+                // Save found collection url
+                Models[collectionElementType].collectionUrl = foundCollections[i].url;
+            }
         }
 
         // Link to buttons

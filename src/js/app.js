@@ -108,6 +108,10 @@ App.showCollectionForModel = function (model, sync) {
                         var oldHtml = $(this).html();
                         $(this).closest('a').parent().html(oldHtml);
                     });
+                    itemsDiv.find('li a').each(function () {
+                        var oldHtml = $(this).html();
+                        $(this).parent().html(oldHtml);
+                    });
                 });
             });
             $('.btn-add-item').click(function (e) {
@@ -140,7 +144,7 @@ App.showCollectionForModel = function (model, sync) {
 
             // Buttons to control saving / cancelling
             $('.btn-cancel').click(function () {
-                App.showItemForModel(item.url, model);
+                App.showCollectionForModel(model);
             });
             $('.btn-save').click(function () {
                 App.saveItemForModel($('#save-form'), true);
@@ -244,6 +248,10 @@ App.showItemForModel = function (itemUrl, model) {
                     itemsDiv.find('a td').each(function () {
                         var oldHtml = $(this).html();
                         $(this).closest('a').parent().html(oldHtml);
+                    });
+                    itemsDiv.find('li a').each(function () {
+                        var oldHtml = $(this).html();
+                        $(this).parent().html(oldHtml);
                     });
                 });
             });

@@ -289,6 +289,7 @@ App.showItemForModel = function (itemUrl, model) {
             });
             $('.btn-save').click(function () {
                 App.saveItemForModel($('#save-form'));
+                App.showCollectionForModel(model);
                 App.showItemForModel(item.url, model);
             });
 
